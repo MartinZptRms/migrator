@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('service_database_table_columns', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('service_database_table_id')->constrained();
+            $table->foreignId('service_database_table_id')->constrained()->onDelete('cascade');;
 
-            $table->foreignId('source_database_table_column_id')->constrained('columns','id','source_database_table_column_id_foreign');
-            $table->foreignId('target_database_table_column_id')->constrained('columns','id','target_database_table_column_id_foreign');
+            $table->foreignId('column_id')->constrained('columns','id');
+            $table->foreignId('custom_column_id')->nullable()->constrained('columns','id');
 
             $table->timestamps();
         });

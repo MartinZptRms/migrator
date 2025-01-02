@@ -7,6 +7,8 @@ use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use PDO;
 
@@ -17,9 +19,6 @@ class TableController extends Controller
      */
     public function index(Database $database)
     {
-
-        // dd($db->select('select table_name from information_schema.tables where table_schema = "enegence_dev" order by table_name, ordinal_position'));
-
         $items = $database->tables()->get();
         return View::make('pages.databases.tables.index', compact('database','items'));
     }
@@ -77,11 +76,11 @@ class TableController extends Controller
         $db = DB::connectUsing($database->name,[
             'driver' => 'mariadb',
             'url' => "",
-            'host' => '127.0.0.1',
-            'port' => '3306',
+            'host' => $database->connection->host,
+            'port' => $database->connection->port,
             'database' => $database->name,
-            'username' => 'root',
-            'password' => "Mardock16021999#",
+            'username' => $database->connection->username,
+            'password' => $database->connection->password,
             // 'password' => "1p86dbF7jg4G9dou",
             'unix_socket' => '',
             'charset' => 'utf8mb4',
@@ -104,14 +103,18 @@ class TableController extends Controller
 
     public function syncColumns(Request $request, Database $database)
     {
+        $validator = Validator::make($request->all(),[
+            'table_id' => ['required','array']
+        ]);
+
         $db = DB::connectUsing($database->name,[
             'driver' => 'mariadb',
             'url' => "",
-            'host' => '127.0.0.1',
-            'port' => '3306',
+            'host' => $database->connection->host,
+            'port' => $database->connection->port,
             'database' => $database->name,
-            'username' => 'root',
-            'password' => "Mardock16021999#",
+            'username' => $database->connection->username,
+            'password' => $database->connection->password,
             // 'password' => "1p86dbF7jg4G9dou",
             'unix_socket' => '',
             'charset' => 'utf8mb4',
@@ -123,14 +126,20 @@ class TableController extends Controller
             'options' => extension_loaded('pdo_mysql') ? array_filter([ PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'), ]) : [],
         ]);
 
-        dd($db->select("select * from information_schema.columns where table_schema = $table->name order by table_name, ordinal_position"));
-        $tables = array_column($db->select('SHOW TABLES'),"Tables_in_$database->name");
-        foreach($tables as $t){
-            $database->tables()->updateOrCreate([
-                'name' => $t
-            ]);
+        foreach($request->table_id as $t){
+            $table = Table::findOrFail($t);
+            $columns = $db->select("select * from information_schema.columns
+                                    where TABLE_SCHEMA = '$database->name'
+                                    and TABLE_NAME = '$table->name'
+                                    order by table_name, ordinal_position");
+            foreach($columns as $c){
+                $table->columns()->updateOrCreate([
+                    'name' => $c->COLUMN_NAME,
+                    'data_type' => $c->COLUMN_TYPE
+                ]);
+            }
         }
 
-        return Redirect::route('databases.tables.index', $database->id)->with('success');
+        return Response::make(['code' => 1], 200, ['Content-Type' => 'application/json']);
     }
 }

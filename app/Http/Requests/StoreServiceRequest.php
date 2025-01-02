@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreDatabaseRequest extends FormRequest
+class StoreServiceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,10 @@ class StoreDatabaseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'connection_id' => ['required'],
-            'name' => ['required']
+            'name' => ['required'],
+            'every' => ['required'],
+            'every_unit' => ['required'],
+            'description' => []
         ];
     }
 }

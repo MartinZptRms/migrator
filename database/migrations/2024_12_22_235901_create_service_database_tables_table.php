@@ -14,10 +14,8 @@ return new class extends Migration
         Schema::create('service_database_tables', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('service_database_id')->constrained();
-
-            $table->foreignId('source_database_table_id')->constrained('tables','id');
-            $table->foreignId('target_database_table_id')->constrained('tables','id');
+            $table->foreignId('service_database_id')->constrained()->onDelete('cascade');;
+            $table->foreignId('table_id')->constrained('tables','id');
 
             $table->timestamps();
         });

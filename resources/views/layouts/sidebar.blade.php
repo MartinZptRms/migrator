@@ -50,6 +50,21 @@
             <div class="menu menu-column menu-rounded menu-sub-indention px-3" id="#kt_app_sidebar_menu" data-kt-menu="true" data-kt-menu-expand="false">
                 <div class="menu-item">
                     <!--begin:Menu link-->
+                    <a class="menu-link" href="{{route('connections.index')}}">
+                        <span class="menu-icon">
+                            <span class="svg-icon svg-icon-2">
+                                <i class="fa-solid fa-plug"></i>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                        <span class="menu-title">Conexiones</span>
+                    </a>
+                    <!--end:Menu link-->
+                </div>
+            </div>
+            <div class="menu menu-column menu-rounded menu-sub-indention px-3" id="#kt_app_sidebar_menu" data-kt-menu="true" data-kt-menu-expand="false">
+                <div class="menu-item">
+                    <!--begin:Menu link-->
                     <a class="menu-link" href="{{route('databases.index')}}">
                         <span class="menu-icon">
                             <span class="svg-icon svg-icon-2">
@@ -58,6 +73,21 @@
                             <!--end::Svg Icon-->
                         </span>
                         <span class="menu-title">Bases de datos</span>
+                    </a>
+                    <!--end:Menu link-->
+                </div>
+            </div>
+            <div class="menu menu-column menu-rounded menu-sub-indention px-3" id="#kt_app_sidebar_menu" data-kt-menu="true" data-kt-menu-expand="false">
+                <div class="menu-item">
+                    <!--begin:Menu link-->
+                    <a class="menu-link" href="{{route('services.index')}}">
+                        <span class="menu-icon">
+                            <span class="svg-icon svg-icon-2">
+                                <i class="fa-solid fa-screwdriver-wrench"></i>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                        <span class="menu-title">Servicios</span>
                     </a>
                     <!--end:Menu link-->
                 </div>

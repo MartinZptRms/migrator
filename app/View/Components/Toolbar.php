@@ -3,6 +3,7 @@
 namespace App\View\Components;
 
 use Closure;
+use Exception;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
 use Illuminate\Support\Collection;
@@ -16,15 +17,18 @@ use Illuminate\Support\Facades\URL;
 class Toolbar extends Component
 {
     private $breadcrumbs = [
-        [ 'module' => 'users', 'plural' => 'Usuarios', 'single' => 'Usuario', 'title' => 'name'],
-        [ 'module' => 'databases', 'plural' => 'Bases de Datos', 'single' => 'Base de Datos', 'title' => 'name'],
-        [ 'module' => 'tables', 'plural' => 'Tablas', 'single' => 'Tabla', 'title' => 'name'],
-        [ 'module' => 'columns', 'plural' => 'Columnas', 'single' => 'Columna', 'title' => 'name'],
+        [ 'module' => 'dashboard', 'route' => 'dashboard', 'plural' => 'Dashboard', 'single' => 'Dashboard', 'title' => 'name'],
+        [ 'module' => 'users', 'route' => 'users', 'plural' => 'Usuarios', 'single' => 'Usuario', 'title' => 'name'],
+        [ 'module' => 'connections', 'route' => 'connections', 'plural' => 'Conexiones', 'single' => 'Conexión', 'title' => 'name'],
+        [ 'module' => 'databases', 'route' => 'databases', 'plural' => 'Bases de Datos', 'single' => 'Base de Datos', 'title' => 'name'],
+        [ 'module' => 'tables', 'route' => 'databases.tables', 'plural' => 'Tablas', 'single' => 'Tabla', 'title' => 'name'],
+        [ 'module' => 'columns', 'route' => 'databases.tables.columns', 'plural' => 'Columnas', 'single' => 'Columna', 'title' => 'name'],
+        [ 'module' => 'services', 'route' => 'services', 'plural' => 'Servicios', 'single' => 'Servicio', 'title' => 'name'],
     ];
 
     private $exceptions = [
         'dashboard' => "index",
-        'profile' => "show"
+        'profile' => "show",
     ];
 
     private $actions = [
@@ -33,6 +37,7 @@ class Toolbar extends Component
         'edit' => 'Editar',
         'show' => 'Ver',
         'build' => 'Editar',
+        'setting' => 'Configurar',
     ];
 
     protected $pathModel = 'App\\Models\\';
@@ -53,8 +58,8 @@ class Toolbar extends Component
         $this->breadcrumbs = Collection::make($this->breadcrumbs);
         $currentRouteName = Route::currentRouteName();
         [$breadcrumbs, $action] = $this->getModulesName($currentRouteName);
-        $this->getRoutes($breadcrumbs, $action);
 
+        $this->getRoutes($breadcrumbs, $action);
         $module = $this->getModuleName($breadcrumbs, $action);
         $this->getItemParent($breadcrumbs);
 
@@ -73,13 +78,22 @@ class Toolbar extends Component
 
     private function getItemParent(&$breadcrumbs){
         $breadcrumbs = $breadcrumbs->values();
-        foreach($breadcrumbs as $i => $b){
+        $originalParams = Request::route()->originalParameters();
+        for($i = 0; $i < $breadcrumbs->count(); $i++){
             if($i%2 == 1){
                 $module = $breadcrumbs[$i-1];
                 $singular =  Str::singular($module['module']);
-                $class = get_class(request()->{$singular});
-                $breadcrumbs->splice($i,0,[
-                    [ 'plural' => request()->{$singular}->{$module['title']}, 'routeIndex' => URL::route($module['module'].'.index')  ,'type' => 'parent' ]
+
+                // $params = explode('.',$breadcrumbs[$i]['route']);
+                $params = explode('.',$module['route']);
+                array_pop($params);
+                $routeParams = [];
+                foreach($params as $p){
+                    $routeParams[Str::singular($p)] = $originalParams[Str::singular($p)];
+                }
+
+                $breadcrumbs->splice($i, 0,[
+                    [ 'plural' => request()->{$singular}->{$module['title']}, 'routeIndex' => URL::route($module['route'].'.index', $routeParams)  ,'type' => 'parent' ]
                 ]);
             }
         }

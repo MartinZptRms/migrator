@@ -12,6 +12,11 @@
                 </span>
                 <input type="text" id="kt_filter_search" class="form-control form-control-sm border-body bg-body w-400px ps-10" placeholder="Search" />
             </div>
+            <div class="d-flex align-items-end position-relative">
+                <a href="{{route('databases.tables.columns.sync', [$database->id, $table->id])}}" class="btn btn-sm fw-bold btn-primary" data-bs-target="#kt_modal_new_target">
+                    <i class="fa-solid fa-rotate"></i>
+                </a>
+            </div>
         </div>
     </div>
     <div class="tab-content">
@@ -22,8 +27,8 @@
                         <table id="kt_tables" class="table table-row-bordered table-row-dashed gy-4 align-middle fw-bolder">
                             <thead class="fs-7 text-gray-400 text-uppercase">
                                 <tr>
-                                    <th class="min-w-50px">Conexión</th>
-                                    <th class="min-w-50px">Base de datos</th>
+                                    <th class="min-w-50px">Nombre</th>
+                                    <th class="min-w-50px">Tamaño</th>
                                     <th class="min-w-50px text-end">Acciones</th>
                                 </tr>
                             </thead>
@@ -32,20 +37,15 @@
                                     <tr>
                                         <td>
                                             <span class="text-gray-700 fw-bold text-muted d-block fs-7">
-                                                {{$i->connection->name}}
+                                                {{$i->name}}
                                             </span>
                                         </td>
                                         <td>
                                             <span class="text-gray-700 fw-bold text-muted d-block fs-7">
-                                                {{$i->name}}
+                                                {{$i->type_text}}
                                             </span>
                                         </td>
                                         <td class="text-end">
-                                            <a href="{{route('databases.tables.index',$i->id)}}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                                <span class="svg-icon svg-icon-3">
-                                                    <i class="fa-solid fa-table"></i>
-                                                </span>
-                                            </a>
                                             <a href="{{route('databases.edit',$i->id)}}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                                 <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                                 <span class="svg-icon svg-icon-3">

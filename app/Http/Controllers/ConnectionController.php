@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreConnectionRequest;
 use App\Models\Connection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\View;
 
 class ConnectionController extends Controller
 {
@@ -12,7 +15,8 @@ class ConnectionController extends Controller
      */
     public function index()
     {
-        //
+        $items = Connection::get();
+        return View::make('pages.connections.index', compact('items'));
     }
 
     /**
@@ -20,15 +24,25 @@ class ConnectionController extends Controller
      */
     public function create()
     {
-        //
+        return View::make('pages.connections.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreConnectionRequest $request)
     {
-        //
+        $validated = $request->safe()->all();
+
+        Connection::create([
+            'name' => $validated['name'],
+            'host' => $validated['host'],
+            'port' => $validated['port'],
+            'username' => $validated['username'],
+            'password' => $validated['password'],
+        ]);
+
+        return Redirect::route('connections.index')->with('success');
     }
 
     /**
@@ -44,15 +58,25 @@ class ConnectionController extends Controller
      */
     public function edit(Connection $connection)
     {
-        //
+        return View::make('pages.connections.edit', compact('connection'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Connection $connection)
+    public function update(StoreConnectionRequest $request, Connection $connection)
     {
-        //
+        $validated = $request->safe()->all();
+
+        $connection->update([
+            'name' => $validated['name'],
+            'host' => $validated['host'],
+            'port' => $validated['port'],
+            'username' => $validated['username'],
+            'password' => $validated['password'],
+        ]);
+
+        return Redirect::route('connections.index')->with('success');
     }
 
     /**
@@ -60,6 +84,6 @@ class ConnectionController extends Controller
      */
     public function destroy(Connection $connection)
     {
-        //
+        $connection->delete();
     }
 }

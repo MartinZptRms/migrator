@@ -13,7 +13,7 @@
                 <input type="text" id="kt_filter_search" class="form-control form-control-sm border-body bg-body w-400px ps-10" placeholder="Search" />
             </div>
             <div class="d-flex align-items-end position-relative">
-                <a href="{{route('databases.tables.sync', $database->id)}}" class="btn btn-sm fw-bold btn-primary" data-bs-target="#kt_modal_new_target">
+                <a href="{{route('databases.tables.sync', [$database->id])}}" class="btn btn-sm fw-bold btn-primary" data-bs-target="#kt_modal_new_target">
                     <i class="fa-solid fa-rotate"></i>
                 </a>
             </div>
@@ -27,6 +27,13 @@
                         <table id="kt_tables" class="table table-row-bordered table-row-dashed gy-4 align-middle fw-bolder">
                             <thead class="fs-7 text-gray-400 text-uppercase">
                                 <tr>
+                                    <th class="mw-50px text-center">
+                                        <button class="btn btn-sm btn-primary p-2 mb-2" id="btnSyncColumns" type="button">
+                                            <i class="fa-solid fa-table-columns"></i>
+                                            <i class="fa-solid fa-rotate"></i>
+                                        </button>
+                                        <input class="form-check-input" type="checkbox" id="selectAllCheckbox">
+                                    </th>
                                     <th class="min-w-50px">Nombre</th>
                                     <th class="min-w-50px">Tamaño</th>
                                     <th class="min-w-50px text-end">Acciones</th>
@@ -35,6 +42,9 @@
                             <tbody class="fs-6">
                                 @foreach ($items as $i)
                                     <tr>
+                                        <td class="text-center">
+                                            <input class="form-check-input" type="checkbox" id="table_id" name="table_id[]" value="{{$i->id}}">
+                                        </td>
                                         <td>
                                             <span class="text-gray-700 fw-bold text-muted d-block fs-7">
                                                 {{$i->name}}
@@ -46,6 +56,11 @@
                                             </span>
                                         </td>
                                         <td class="text-end">
+                                            <a href="{{route('databases.tables.columns.index',[$database->id, $i->id])}}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                                <span class="svg-icon svg-icon-3">
+                                                    <i class="fa-solid fa-table-columns"></i>
+                                                </span>
+                                            </a>
                                             <a href="{{route('databases.edit',$i->id)}}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                                 <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                                 <span class="svg-icon svg-icon-3">
@@ -82,5 +97,62 @@
 @endsection
 
 @push('custom-scripts')
-    <script src="{{asset('assets/js/tables.js')}}"></script>
+    {{-- <script src="{{asset('assets/js/tables.js')}}"></script> --}}
+    <script>
+        $(document).ready(function () {
+            const table = $('#kt_tables').DataTable({
+                order: [],
+                columnDefs: [{ "orderable": false, "targets": [ 0 ] }]
+            });
+
+            $('#selectAllCheckbox').on('change', function () {
+                if ($(this).is(":checked")) {
+                    var data = table.rows().data();
+                    data.each(function(rowData, index) {
+                        // Buscamos el input en la fila correspondiente
+                        const row = table.row(index).node();
+                        const input = row.querySelector('input[type="checkbox"], #table_id');
+                        if (input) {
+                            input.checked = true;
+                        }
+                    });
+                } else {
+                    var data = table.rows().data();
+                    data.each(function(rowData, index) {
+                        // Buscamos el input en la fila correspondiente
+                        const row = table.row(index).node();
+                        const input = row.querySelector('input[type="checkbox"], #table_id');
+                        if (input) {
+                            input.checked = false;
+                        }
+                    });
+                }
+            });
+
+            $('#btnSyncColumns').on('click', async function () {
+                const formData = new FormData();
+                var data = table.rows().data();
+                data.each(function(rowData, index) {
+                    // Buscamos el input en la fila correspondiente
+                    const row = table.row(index).node();
+                    const input = row.querySelector('input[type="checkbox"], #table_id');
+                    if (input) {
+                        formData.append("table_id[]",input.value);
+                    }
+                });
+
+                const response = await fetch("{{route('databases.tables.multiple.columns.sync', $database->id)}}", {
+                    method: "POST",
+                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                    body: formData,
+                }).then(response => response.json());
+
+                if(response.code == 1){
+                    location.reload();
+                }
+            });
+
+
+        });
+    </script>
 @endpush

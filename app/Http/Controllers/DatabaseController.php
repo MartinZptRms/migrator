@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDatabaseRequest;
+use App\Models\Connection;
 use App\Models\Database;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -24,7 +25,8 @@ class DatabaseController extends Controller
      */
     public function create()
     {
-        return View::make('pages.databases.create');
+        $connections = Connection::get();
+        return View::make('pages.databases.create', compact('connections'));
     }
 
     /**
@@ -35,7 +37,8 @@ class DatabaseController extends Controller
         $validated = $request->safe()->all();
 
         Database::create([
-            'name' => $validated['name']
+            'connection_id' => $validated['connection_id'],
+            'name' => $validated['name'],
         ]);
 
         return Redirect::route('databases.index')->with('success');
@@ -52,9 +55,10 @@ class DatabaseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(StoreDatabaseRequest $request, Database $database)
+    public function edit(Database $database)
     {
-        return View::make('pages.databases.edit', compact('database'));
+        $connections = Connection::get();
+        return View::make('pages.databases.edit', compact('database','connections'));
     }
 
     /**
@@ -65,7 +69,8 @@ class DatabaseController extends Controller
         $validated = $request->safe()->all();
 
         $database->update([
-            'name' => $validated['name']
+            'connection_id' => $validated['connection_id'],
+            'name' => $validated['name'],
         ]);
 
         return Redirect::route('databases.index')->with('success');

@@ -17,9 +17,11 @@ return new class extends Migration
             $table->string('name');
 
             $table->integer('every');
-            $table->integer('every_type');
+            $table->string('every_unit');
 
             $table->longText('description')->nullable();
+
+            $table->boolean('status')->default(0);
 
             $table->timestamps();
         });

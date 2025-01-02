@@ -6,7 +6,7 @@
 
 @section('content')
 
-<form onsubmit="loading();" method="POST" action="{{route('skills.update', $skill->id)}}" enctype="multipart/form-data">
+<form onsubmit="loading();" method="POST" action="{{route('databases.update', $database->id)}}" enctype="multipart/form-data">
     @method('PUT')
     @csrf
     <div class="row">
@@ -23,30 +23,23 @@
                 </div>
                 <div class="card-body pt-5">
                     <div class="row">
-                        <div class="col-md-12 col-lg-6 col-xl-6 mb-8">
-                            <label for="name" class="form-label required">Nombre</label>
-                            <input type="text" class="form-control" placeholder="Nombre" id="name" name="name" value="{{old('name', $skill->name)}}"/>
-                            @error('name')
-                                <label for="name" class="text-danger">{{$message}}</label>
-                            @enderror
-                        </div>
-                        <div class="col-md-12 col-lg-6 col-xl-6 mb-8">
-                            <label for="name" class="form-label required">Tipo</label>
-                            <select class="form-select" name="type" id="type"
-                                    data-control="select2" data-placeholder="Selecciona una opción" >
-                                    <option></option>
-                                @foreach ($types as $i => $type)
-                                    <option value="{{$i}}" @selected( $i == old('type', $skill->type) )>{{$type}}</option>
+                        <div class="col-md-12 col-lg-2 col-xl-2 mb-8">
+                            <label for="connection_id" class="form-label required">Conexión</label>
+                            <select class="form-control" name="connection_id" id="connection_id">
+                                <option value="">Selecciona una conexión</option>
+                                @foreach ($connections as $c)
+                                <option value="{{$c->id}}" @selected($c->id == $database->connection_id)>{{$c->name}}</option>
                                 @endforeach
                             </select>
+                            @error('connection_id')
+                                <label for="connection_id" class="text-danger">{{$message}}</label>
+                            @enderror
                         </div>
-
-                        <div class="col-md-12 col-lg-12 col-xl-12">
-                            <label for="description" class="form-label">Descripción</label>
-                            <textarea type="text" class="form-control" placeholder="Proyecto"
-                                    name="description" id="description" value="{{old('description',$skill->description)}}"> </textarea>
-                            @error('description')
-                                <label for="description" class="text-danger">{{$message}}</label>
+                        <div class="col-md-12 col-lg-10 col-xl-10 mb-8">
+                            <label for="name" class="form-label required">Nombre</label>
+                            <input type="text" class="form-control" placeholder="Nombre" id="name" name="name" value="{{old('name', $database->name)}}"/>
+                            @error('name')
+                                <label for="name" class="text-danger">{{$message}}</label>
                             @enderror
                         </div>
                     </div>
@@ -64,5 +57,7 @@
 
 @endsection
 @push('custom-scripts')
-
+<script>
+    $('#connection_id').select2();
+</script>
 @endpush

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('databases', function (Blueprint $table) {
             $table->id();
 
+            $table->foreignId('connection_id')->constrained();
             $table->string('name');
             $table->double('size')->nullable();
 

@@ -12,6 +12,8 @@
                 </span>
                 <input type="text" id="kt_filter_search" class="form-control form-control-sm border-body bg-body w-400px ps-10" placeholder="Search" />
             </div>
+            <div class="d-flex align-items-end position-relative">
+            </div>
         </div>
     </div>
     <div class="tab-content">
@@ -22,8 +24,10 @@
                         <table id="kt_tables" class="table table-row-bordered table-row-dashed gy-4 align-middle fw-bolder">
                             <thead class="fs-7 text-gray-400 text-uppercase">
                                 <tr>
-                                    <th class="min-w-50px">Conexión</th>
-                                    <th class="min-w-50px">Base de datos</th>
+                                    <th class="min-w-50px">Service</th>
+                                    <th class="min-w-50px">Ejecución</th>
+                                    <th class="min-w-50px">Descripción</th>
+                                    <th class="min-w-50px">Estatus</th>
                                     <th class="min-w-50px text-end">Acciones</th>
                                 </tr>
                             </thead>
@@ -32,21 +36,31 @@
                                     <tr>
                                         <td>
                                             <span class="text-gray-700 fw-bold text-muted d-block fs-7">
-                                                {{$i->connection->name}}
+                                                {{$i->name}}
                                             </span>
                                         </td>
                                         <td>
                                             <span class="text-gray-700 fw-bold text-muted d-block fs-7">
-                                                {{$i->name}}
+                                                {{$i->every}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="text-gray-700 fw-bold text-muted d-block fs-7">
+                                                {{$i->description}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="text-gray-700 fw-bold text-muted d-block fs-7">
+                                                {{$i->status}}
                                             </span>
                                         </td>
                                         <td class="text-end">
-                                            <a href="{{route('databases.tables.index',$i->id)}}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                            <a href="{{route('services.setting',$i->id)}}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                                 <span class="svg-icon svg-icon-3">
-                                                    <i class="fa-solid fa-table"></i>
+                                                    <i class="fa-solid fa-gear"></i>
                                                 </span>
                                             </a>
-                                            <a href="{{route('databases.edit',$i->id)}}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                            <a href="{{route('services.edit',$i->id)}}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                                 <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                                 <span class="svg-icon svg-icon-3">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -56,7 +70,7 @@
                                                 </span>
                                                 <!--end::Svg Icon-->
                                             </a>
-                                            <a href="#"  onclick="removeItem('{{route('databases.destroy',$i->id)}}')" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                                            <a href="#"  onclick="removeItem('{{route('services.destroy',$i->id)}}')" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
                                                 <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
                                                 <span class="svg-icon svg-icon-3">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">

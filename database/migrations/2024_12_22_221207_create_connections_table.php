@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
 
             $table->string('host');
-            $table->string('ports');
+            $table->string('port');
 
             $table->string('username');
             $table->string('password');

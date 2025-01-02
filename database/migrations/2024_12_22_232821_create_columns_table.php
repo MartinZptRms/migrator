@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('data_type');
 
+            $table->integer('type')->default(0); // 0 = source // 1 custom
+
             $table->timestamps();
         });
     }
