@@ -11,13 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('service_database_tables', function (Blueprint $table) {
+        Schema::create('service_database_table_joins', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('service_database_id')->constrained()->onDelete('cascade');;
-            $table->foreignId('table_id')->constrained('tables','id');
+            $table->foreignId('service_database_table_id')->constrained();
 
-            $table->boolean('source')->default(0);
+            $table->string('type');
+
+            $table->foreignId('service_database_table_column_id')->constrained();
+
+            $table->string('from_column');
+            $table->string('to_column');
 
             $table->timestamps();
         });
@@ -28,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('service_database_tables');
+        Schema::dropIfExists('service_database_table_joins');
     }
 };

@@ -26,7 +26,7 @@ class Setting extends Component
 
     public int $step = 1;
     public Collection $databases;
-    public array $inputDatabases;
+    public array $inputDatabases = [];
 
     public Collection $tables;
     public bool $allTables;
@@ -47,6 +47,12 @@ class Setting extends Component
         $this->serviceSourceColumns = Collection::make();
         $this->serviceTargetColumns = Collection::make();
         $this->serviceSourceClauses = Collection::make();
+
+        if($this->service->databases()->count() > 1){
+            $currentServiceDatabases = $this->service->databases()->get();
+            $this->inputDatabases[0] = $currentServiceDatabases->where('type', 0)->first()->database_id;
+            $this->inputDatabases[1] = $currentServiceDatabases->where('type', 1)->first()->database_id;
+        }
     }
 
     public function render()
@@ -106,6 +112,10 @@ class Setting extends Component
     }
 
     #Integration
+    public function setSourceTarget($id){ //source identity for selected table
+        ServiceDatabaseTable::whereIn('id',$this->serviceSourceTables->pluck('id'))->update([ 'source' => 0 ]);
+        ServiceDatabaseTable::where('id', $id)->update([ 'source' => 1 ]);
+    }
     public function changeSourceTable($id)
     {
         $this->selectedServiceSourceTable = $this->serviceSourceTables->where('id', $id)->first();
@@ -117,6 +127,7 @@ class Setting extends Component
     public function changeSourceColumn($id)
     {
         $this->selectedSourceColumn = $this->serviceSourceColumns->where('id', $id)->first();
+
     }
 
     public function changeTargetTable($id)
@@ -125,6 +136,7 @@ class Setting extends Component
         $this->serviceTargetColumns = $this->selectedServiceTargetTable->columns()->get();
         $this->selectedServiceTargetColumn = null;
     }
+
     public function changeTargetColumn($id)
     {
         $this->selectedServiceTargetColumn = $this->serviceTargetColumns->find($id);
@@ -195,9 +207,10 @@ class Setting extends Component
     }
 
     public Collection $serviceSourceClauses;
-    public string $clause, $field, $operator, $value;
+    public string $clause_type, $clause, $field, $operator, $value;
     public function addClause(){
         $this->selectedServiceSourceTable->clauses()->create([
+            'type' => $this->clause_type,
             'clause' => $this->clause,
             'field' => $this->field,
             'operator' => $this->operator,
@@ -210,6 +223,16 @@ class Setting extends Component
         $this->value = "";
 
         $this->serviceSourceClauses = $this->selectedServiceSourceTable->clauses()->get();
+    }
+    public function removeClause($service_database_table_clause_id){
+        $this->selectedServiceSourceTable->clauses()->where('id', $service_database_table_clause_id)->delete();
+        $this->serviceSourceClauses = $this->selectedServiceSourceTable->clauses()->get();
+    }
+
+    public $join_from_table, $join_type, $join_to_table, $join_from_column, $join_to_column;
+    public function addJoin()
+    {
+
     }
 
 }

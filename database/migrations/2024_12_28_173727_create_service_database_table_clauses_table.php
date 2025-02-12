@@ -16,6 +16,7 @@ return new class extends Migration
 
             $table->foreignId('service_database_table_id')->onDelete('cascade');;
 
+            $table->boolean('type')->default(0);
             $table->string('clause');
             $table->string('field');
             $table->string('operator');

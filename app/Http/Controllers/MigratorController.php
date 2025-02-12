@@ -6,6 +6,8 @@ use App\Models\Database;
 use App\Models\Service;
 use App\Models\Connection;
 use App\Models\Table;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -43,13 +45,13 @@ class MigratorController extends Controller
         $this->dbTarget = $this->connection(new Connection, $service->target_database->database);
     }
 
-    public function start()
+    public function start(Service $service)
     {
-        $service = Service::first();
+        // $service = Service::first();
 
         $this->init($service);
 
-        // $this->createTables($service);
+        $this->createTables($service);
 
         $this->migration($service);
 
@@ -61,17 +63,22 @@ class MigratorController extends Controller
         $targetDatabase = $service->target_database;
         $serviceTargetTables = $targetDatabase->tables()->get();
 
-        foreach($serviceTargetTables as $stt){
-            $table = $stt->table;
-            $serviceTargetColumns = $stt->columns()->get();
-            $columns = [];
-            foreach($serviceTargetColumns as $stc){
-                $columns[] = $stc->custom_column ? $stc->custom_column->name." ".$stc->custom_column->data_type : $stc->column->name." ".$stc->column->data_type;
-            }
-            $statementColumns = implode(', ', $columns);
-            $statementCreateTable = "CREATE TABLE $table->name ( $statementColumns ); ";
+        try{
+            foreach($serviceTargetTables as $stt){
+                $table = $stt->table;
+                $serviceTargetColumns = $stt->columns()->get();
+                $columns = [];
+                foreach($serviceTargetColumns as $stc){
+                    $columns[] = $stc->custom_column ? $stc->custom_column->name." ".$stc->custom_column->data_type : $stc->column->name." ".$stc->column->data_type;
+                }
+                $statementColumns = implode(', ', $columns);
+                $statementCreateTable = "CREATE TABLE $table->name ( $statementColumns ); ";
 
-            $this->dbTarget->statement($statementCreateTable);
+                $this->dbTarget->statement($statementCreateTable);
+            }
+
+        }catch(Exception $e){
+
         }
     }
 
@@ -80,36 +87,41 @@ class MigratorController extends Controller
         set_time_limit(-1);
         // $this->dbSource->beginTransaction();
         // $this->dbTarget->beginTransaction();
-
         $sourceDatabase = $service->source_database;
+        $database = $sourceDatabase->database;
         $sourceServiceTables = $sourceDatabase->tables()->get();
 
         $targetDatabase = $service->target_database;
         $targetServiceTables = $targetDatabase->tables()->get();
+
+        #selected table base - icon star
+        $sourceBaseTable = $sourceServiceTables->where('source', 1)->first();
+        $table = $sourceBaseTable->table;
+
+        $columns = $this->dbSource->select("select * from information_schema.columns where TABLE_SCHEMA = '$database->name' and TABLE_NAME = '$table->name' order by table_name, ordinal_position");
         foreach($targetServiceTables as $sst){
-            $targetServiceColumns = $sst->columns()->with('column')->get()->groupBy('column.table_id');
+            $targetServiceColumns = $sst->columns()->with('column')->get();
 
-            foreach($targetServiceColumns as $i => $tsc){
-                $table  = Table::findOrFail($i);
-                $stringColumns = $tsc->pluck('alias')->toArray();
+            $stringColumns = $targetServiceColumns->pluck('alias')->toArray();
 
-                $database = $sourceDatabase->database;
+            $sourceTable = $this->dbSource->table($table->name)->select($stringColumns);
+            // $sourceTable = $this->dbSource->table($table->name);
 
-                $columns = $this->dbSource->select("select * from information_schema.columns where TABLE_SCHEMA = '$database->name' and TABLE_NAME = '$table->name' order by table_name, ordinal_position");
-
-                $sourceTable = $this->dbSource->table($table->name)->select($stringColumns);
-
-                foreach($columns as $c){
-                    if($c->COLUMN_NAME == 'updated_at' || $c->COLUMN_NAME == 'updatedAt' || $c->COLUMN_NAME == 'created_at' || $c->COLUMN_NAME == 'createdAt'){
-                        $sourceTable = $sourceTable->orwhereDate($c->COLUMN_NAME,'>=','2024-12-20');
-                    }
+            $clauses = $sourceBaseTable->clauses()->get();
+            foreach($clauses as $cl){
+                if($cl->type == 1){
+                    $sourceTable = $sourceTable->where($cl->field, $cl->operator, eval('return '.$cl->value.';'));
+                }else if($cl->clause == 'where'){
+                    $sourceTable = $sourceTable->where($cl->field, $cl->operator, $cl->value);
                 }
-
-                $sourceTable = $sourceTable->orderBy('createdAt')->chunk(10000, function($data) use ($sst){
-                    $dataInsert = json_decode (json_encode ($data), TRUE);
-                    $this->dbTarget->table($sst->table->name)->insert( $dataInsert );
-                });
             }
+            $max_placeholders = 65000;
+            $rows_per_block = floor($max_placeholders / $targetServiceColumns->pluck('alias')->count());
+            $columnOrderBy = $clauses->where('type', '1')->first()?->field ?: $columns[0]->COLUMN_NAME;
+            $sourceTable = $sourceTable->orderBy($columnOrderBy)->chunk($rows_per_block, function($data) use ($sst){
+                $dataInsert = json_decode (json_encode ($data), TRUE);
+                $this->dbTarget->table($sst->table->name)->insert( $dataInsert );
+            });
         }
     }
 }

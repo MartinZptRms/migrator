@@ -11,6 +11,7 @@ class ServiceDatabaseTable extends Model
 {
     protected $fillable = [
         'table_id',
+        'source',
     ];
 
     public function table(): BelongsTo {

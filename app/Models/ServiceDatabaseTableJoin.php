@@ -7,18 +7,22 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class ServiceDatabaseTableClause extends Model
+class ServiceDatabaseTableJoin extends Model
 {
     protected $fillable = [
+        'service_database_table_id',
         'type',
-        'clause',
-        'field',
-        'operator',
-        'value',
+        'service_database_table_column_id',
+        'from_column',
+        'to_column',
     ];
 
-    public function table(): BelongsTo {
+    public function service_table(): BelongsTo {
         return $this->belongsTo(ServiceDatabaseTable::class);
+    }
+
+    public function service_column(): BelongsTo {
+        return $this->belongsTo(ServiceDatabaseTableColumn::class);
     }
 
 }

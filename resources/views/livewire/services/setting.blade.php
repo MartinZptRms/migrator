@@ -51,7 +51,8 @@
                                     <!--begin::Col-->
                                     <div class="col-lg-3">
                                         <!--begin::Option-->
-                                        <input type="checkbox" class="btn-check" name="databases[]" value="{{$d->id}}" id="databases_{{$d->id}}" wire:model="inputDatabases"/>
+                                        <input type="checkbox" class="btn-check" name="databases[]" value="{{$d->id}}" id="databases_{{$d->id}}" wire:model="inputDatabases"
+                                            @checked(($inputDatabases[0]??null) == $d->id || ($inputDatabases[1]??null) == $d->id) />
                                         <label class="btn btn-outline btn-outline-dashed btn-active-light-primary p-7 d-flex align-items-center mb-10" for="databases_{{$d->id}}">
                                             <span class="svg-icon svg-icon-3x me-5">
                                                 <i class="fa-solid fa-database" style="font-size: 3rem;"></i>
@@ -179,7 +180,13 @@
                                                     <!--begin::Nav item-->
                                                     @foreach($serviceSourceTables as $t)
                                                     <li class="nav-item mt-2">
-                                                        <button type="button" class="nav-link text-muted text-active-primary ms-0 py-0 me-4 ps-2 border-0 {{$selectedServiceSourceTable?->id == $t->id ? 'active' : null}}"
+                                                        <button type="button" class="nav-link text-muted text-active-primary ms-0 py-0 p-2 border-0 d-inline {{$t?->source == 1 ? 'active' : null}}"
+                                                            wire:click="setSourceTarget({{$t->id}})">
+                                                            <span class="svg-icon svg-icon-3 svg-icon-muted">
+                                                                <i class="fa-solid fa-star"></i>
+                                                            </span>
+                                                        </button>
+                                                        <button type="button" class="nav-link text-muted text-active-primary ms-0 py-0 me-4 ps-2 border-0 d-inline {{$selectedServiceSourceTable?->id == $t->id ? 'active' : null}}"
                                                                 wire:click="changeSourceTable({{$t->id}})">
                                                             <span class="svg-icon svg-icon-3 svg-icon-muted">
                                                                 <i class="fa-solid fa-table"></i>
@@ -254,14 +261,21 @@
                                                     <!--begin::Nav item-->
                                                     @foreach($serviceTargetColumns as $tc)
                                                     <li class="nav-item ms-auto me-0 mt-2">
-                                                       <button type="button" class="nav-link text-muted text-active-primary me-0 py-0 ms-10 pe-9 border-0 text-end {{$selectedServiceTargetColumn?->id == $tc->id ? 'active' : null}}"
+                                                        {{-- @if($selectedServiceTargetColumn?->id == $tc->id)
+                                                        <div class="btn btn-sm btn-icon mw-20px btn-active-color-primary me-2 d-inline" wire:click="">
+                                                            <span class="svg-icon svg-icon-success svg-icon-1">
+                                                                <svg viewBox="0 0 32 32" id="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <defs> <style> .cls-1 { fill: #009EF7; } .cls-2 { fill: none; } </style> </defs> <path class="cls-1" d="M19.386,15.2105l9-7A1,1,0,0,1,30,9V23a1,1,0,0,1-1.614.79l-9-7a1,1,0,0,1,0-1.5791Z"></path> <rect class="cls-1" x="15" y="2" width="2" height="28" transform="translate(32 32) rotate(-180)"></rect> <path class="cls-1" d="M13,16a1.001,1.001,0,0,1-.386.79l-9,7A1,1,0,0,1,2,23V9a1,1,0,0,1,1.614-.79l9,7A1.001,1.001,0,0,1,13,16ZM4,20.9556,10.3711,16,4,11.0444Z"></path> <rect id="_Transparent_Rectangle_" data-name="<Transparent Rectangle>" class="cls-2" width="32" height="32"></rect> </g></svg>
+                                                            </span>
+                                                        </div>
+                                                        @endif --}}
+                                                       <div type="button" class="nav-link text-muted text-active-primary me-0 py-0 ms-10 pe-9 border-0 text-end d-inline {{$selectedServiceTargetColumn?->id == $tc->id ? 'active' : null}}"
                                                                 wire:click="changeTargetColumn({{$tc->id}})">
                                                             {{$tc?->custom_column?->name ?? $tc->column->name}}
                                                             <span class="svg-icon svg-icon-3 svg-icon-muted me-3">
                                                                 <i class="fa-solid fa-table"></i>
                                                             </span>
                                                             <span class="bullet-custom position-absolute end-0 top-0 w-3px h-100 bg-primary rounded-end"></span>
-                                                        </button>
+                                                        </div>
                                                     </li>
                                                     @endforeach
                                                     @if($selectedSourceColumn)
@@ -338,7 +352,7 @@
                                     </div>
                                     <!--end::User menu-->
                                 </div>
-                                <div class="col-12 col-lg-12 row">
+                                <div class="col-12 col-lg-6 row">
                                     <h3 class="fw-bold d-flex align-items-center text-dark">
                                         Scripts
                                         {{-- <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="Integración"></i> --}}
@@ -347,19 +361,27 @@
                                         Estos scripts se ejecutarán por tabla al extraer la información
                                     </div>
 
-                                    <div class="col-12 col-lg-2">
+                                    <div class="col-12 col-lg-6">
+                                        <label for="clause" class="form-label required pb-0 mb-0">Tipo</label>
+                                        <select class="form-select" wire:model="clause_type">
+                                            <option value="">Selecciona una opción</option>
+                                            <option value="0">Absoluto</option>
+                                            <option value="1">Relativo</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-lg-6">
                                         <label for="clause" class="form-label required pb-0 mb-0">Cláusula</label>
                                         <input type="text" class="form-control" name="clause" id="clause" placeholder="Cláusula" wire:model="clause">
                                     </div>
-                                    <div class="col-12 col-lg-9 row">
-                                        <label for="field" class="form-label required ps-0 pb-0 mb-0">Condición</label>
-                                        <div class="col m-0 ps-0">
+                                    <div class="col-12 col-lg-11 row pt-2">
+                                        <label for="field" class="form-label required pb-0 mb-0">Condición</label>
+                                        <div class="col m-0">
                                             <input type="text" class="form-control" name="field" id="field" placeholder="Campo" wire:model="field">
                                         </div>
-                                        <div class="col-2 m-0 ps-1">
+                                        <div class="col col-lg-2 m-0">
                                             <input type="text" class="form-control" name="operator" id="operator" placeholder="Operador" wire:model="operator">
                                         </div>
-                                        <div class="col m-0 ps-1">
+                                        <div class="col m-0">
                                             <input type="text" class="form-control" name="value" id="value" placeholder="Valor" wire:model="value">
                                         </div>
                                     </div>
@@ -375,6 +397,72 @@
                                         </div>
                                     </div>
                                     @foreach ($serviceSourceClauses as $ssc)
+                                    <div class="col-12 col-lg-12 text-center mt-4 row">
+                                        <div class="col">
+                                            <span class="text-muted text-center fs-5">{{$ssc->clause}}</span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="text-muted text-center fs-5">{{$ssc->field}}</span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="text-muted text-center fs-5">{{$ssc->operator}}</span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="text-muted text-center fs-5">{{$ssc->value}}</span>
+                                        </div>
+                                        <div class="col">
+                                            <div class="btn btn-md btn-icon mw-20px btn-active-color-danger me-2" wire:click="removeClause({{$ssc->id}})">
+                                                <span class="svg-icon svg-icon-success svg-icon-1">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                                <div class="col-12 col-lg-6 row">
+                                    <h3 class="fw-bold d-flex align-items-center text-dark">
+                                        Joins
+                                        {{-- <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="Integración"></i> --}}
+                                    </h3>
+                                    <div class="text-muted fw-semibold fs-6 mb-4">
+                                        Estos joins se ejecutarán por tabla al extraer la información
+                                    </div>
+
+                                    <div class="col-12 col-lg-5">
+                                        <label for="clause" class="form-label required pb-0 mb-0">FROM</label>
+                                        <input type="text" class="form-control" name="clause" id="clause" placeholder="FROM" value="{{$selectedServiceSourceTable?->table?->name}}">
+                                    </div>
+                                    <div class="col-12 col-lg-2">
+                                        <label for="clause" class="form-label required pb-0 mb-0">Tipo</label>
+                                        <input type="text" class="form-control" name="clause" id="clause" placeholder="Cláusula" wire:model="join_type">
+                                    </div>
+                                    <div class="col-12 col-lg-5">
+                                        <label for="clause" class="form-label required pb-0 mb-0">TO</label>
+                                        <input type="text" class="form-control" name="clause" id="clause" placeholder="Cláusula" value="{{$selectedServiceTargetColumn?->column?->table?->name}}">
+                                    </div>
+                                    <div class="col-12 col-lg">
+                                        <label for="clause" class="form-label required pb-0 mb-0">FROM COLUMN</label>
+                                        <input type="text" class="form-control" name="clause" id="clause" placeholder="Cláusula" wire:model="join_from_column">
+                                    </div>
+                                    <div class="col-12 col-lg">
+                                        <label for="field" class="form-label required ps-0 pb-0 mb-0">TO COLUMN</label>
+                                        <div class="col m-0 ps-0">
+                                            <input type="text" class="form-control" name="field" id="field" placeholder="Campo" wire:model="join_to_column">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-1 d-flex align-items-end">
+                                        <div class="btn btn-md btn-icon mw-20px btn-active-color-primary me-2" wire:click="addJoin">
+                                            <span class="svg-icon svg-icon-success svg-icon-1">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor"></rect>
+                                                    <rect x="10.8891" y="17.8033" width="12" height="2" rx="1" transform="rotate(-90 10.8891 17.8033)" fill="currentColor"></rect>
+                                                    <rect x="6.01041" y="10.9247" width="12" height="2" rx="1" fill="currentColor"></rect>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    {{-- @foreach ($serviceSourceClauses as $ssc)
                                     <div class="col-12 col-lg-2 text-center mt-4">
                                         <span class="text-muted  fs-5">{{$ssc->clause}}</span>
                                     </div>
@@ -389,7 +477,7 @@
                                             <span class="text-muted text-center fs-5">{{$ssc->value}}</span>
                                         </div>
                                     </div>
-                                    @endforeach
+                                    @endforeach --}}
                                 </div>
 
                             </div>
