@@ -1,0 +1,58 @@
+version: '3'
+services:
+  migrator_database:
+    image: mysql:5.7
+    container_name: migrator_database
+    hostname: ${DB_HOST}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "127.0.0.1:33061:3306"
+    networks:
+      - network_local
+
+  migrator:
+    build:
+      context: .
+      args:
+        uid: 8983
+    container_name: migrator
+    depends_on:
+      - migrator_database
+    environment:
+      APP_NAME: ${APP_NAME}
+      APP_ENV: ${APP_ENV}
+      APP_KEY: ${APP_KEY}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_TIMEZONE: ${APP_TIMEZONE}
+      APP_URL: ${APP_URL}
+      APP_LOCALE: ${APP_LOCALE}
+      APP_MAINTENANCE_DRIVER: ${APP_MAINTENANCE_DRIVER}
+      PHP_CLI_SERVER_WORKERS: ${PHP_CLI_SERVER_WORKERS}
+      BCRYPT_ROUNDS: ${BCRYPT_ROUNDS}
+      LOG_CHANNEL: ${LOG_CHANNEL}
+      DB_CONNECTION: ${DB_CONNECTION}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SESSION_DRIVER: ${SESSION_DRIVER}
+      FILESYSTEM_DISK: ${FILESYSTEM_DISK}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION}
+      CACHE_STORE: ${CACHE_STORE}
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/var/www/html
+    ports:
+      - 8006:80
+    networks:
+      - network_local
+
+networks:
+  network_local:
+    driver: bridge
