@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('service_database_table_joins', function (Blueprint $table) {
+        Schema::create('sd_table_joins', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('service_database_table_id')->constrained();
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('service_database_table_joins');
+        Schema::dropIfExists('sd_table_joins');
     }
 };
