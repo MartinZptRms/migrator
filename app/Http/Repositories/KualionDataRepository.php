@@ -78,6 +78,51 @@ class KualionDataRepository
 
     public function diccionarioDeFoliosTable()
     {
+        // Query origin data
+        $sourceData =  $this->sourceConnection->select(
+            sprintf(
+                "SELECT %s FROM %s",
+                "folio, concepto, mercado, clasificacion, descripcion",
+                "enegence_dev.ecd_conceptos",
+            )
+        );
+        // Parse to Array
+        $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Map to target database fields
+        $targetDataArray = array_map(
+            function ($item) {
+                return [
+                    'FOLIO'         => $item['folio'],
+                    'CONCEPTO'      => $item['concepto'],
+                    'MERCADO'       => $item['mercado'],
+                    'CLASIFICACION' => $item['clasificacion'],
+                    'DESCRIPCION'   => $item['descripcion'],
+                ];
+            },
+            $sourceDataArray
+        );
+
+        // Parce to Chunks for optimization.
+        $chunks = array_chunk($targetDataArray, 1000);
+
+        // Run insert query in target connection transaction
+        DB::connection('oracle')->transaction(function () use ($chunks) {
+            foreach ($chunks as $chunk) {
+                $this->targetConnection->table('DICCIONARIOFOLIOSLIQUIDACION')->upsert(
+                    $chunk,
+                    [
+                        'FOLIO',
+                        'CONCEPTO',
+                        'MERCADO',
+                    ],
+                    [
+                        'CLASIFICACION',
+                        'DESCRIPCION'
+                    ]
+                );
+            }
+        });
     }
 
     public function listadoDeContratosTable()
