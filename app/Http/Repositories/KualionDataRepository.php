@@ -56,7 +56,22 @@ class KualionDataRepository
         // Run insert query in target connection transaction
         DB::connection('oracle')->transaction(function () use ($chunks) {
             foreach ($chunks as $chunk) {
-                $this->targetConnection->table('CONTRAPARTES')->insert($chunk);
+                $this->targetConnection->table('CONTRAPARTES')->upsert(
+                    $chunk,
+                    [
+                        'NAME',
+                        'RFC',
+                    ],
+                    [
+                        'SHORTNAME',
+                        'NAME',
+                        'RFC',
+                        'EMAIL',
+                        'MUNICIPIO',
+                        'CONTRACTNUMBER',
+                        'CONTRACTNUMBERID'
+                    ]
+                );
             }
         });
     }
