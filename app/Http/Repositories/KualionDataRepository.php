@@ -323,6 +323,50 @@ class KualionDataRepository
 
     public function energiaAsignadaZonadeCargaTable()
     {
+        // Query origin data
+        $sourceData =  $this->sourceConnection->select(
+            sprintf(
+                "SELECT %s FROM %s where updated_at >= %s",
+                "Zona_Carga, Fecha, Hora, Total_Cargas",
+                "enegence_dev.energiaasignadazonascarga_historico",
+                $this->startDate,
+            )
+        );
+        // Parse to Array
+        $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Map to target database fields
+        $targetDataArray = array_map(
+            function ($item) {
+                return [
+                    'ZONADECARGA' => $item['Zona_Carga'],
+                    'FECHA'       => $item['Fecha'],
+                    'HORA'        => $item['Hora'],
+                    'TOTALCARGAS' => $item['Total_Cargas'],
+                ];
+            },
+            $sourceDataArray
+        );
+
+        // Parce to Chunks for optimization.
+        $chunks = array_chunk($targetDataArray, 1000);
+
+        // Run insert query in target connection transaction
+        DB::connection('oracle')->transaction(function () use ($chunks) {
+            foreach ($chunks as $chunk) {
+                $this->targetConnection->table('ENERGIAASIGNADAZONADECARGA')->upsert(
+                    $chunk,
+                    [
+                        'ZONADECARGA',
+                        'FECHA',
+                        'HORA',
+                    ],
+                    [
+                        'TOTALCARGAS'
+                    ]
+                );
+            }
+        });
     }
 
     public function energiaGeneradaporTipodeTeconologiaTable()
