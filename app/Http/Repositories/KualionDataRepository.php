@@ -275,6 +275,50 @@ class KualionDataRepository
 
     public function tipoCambioFixTable()
     {
+        // Query origin data
+        $sourceData =  $this->sourceConnection->select(
+            sprintf(
+                "SELECT %s FROM %s where UpdateDate >= %s",
+                "Serie_Name, Period, Value, Units",
+                "enegence_dev.tipocambio_fix",
+                $this->startDate,
+            )
+        );
+        // Parse to Array
+        $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Map to target database fields
+        $targetDataArray = array_map(
+            function ($item) {
+                return [
+                    'NOMBREDESERIE' => $item['Serie_Name'],
+                    'FECHA'         => $item['Period'],
+                    'TIPOCAMBIO'    => $item['Value'],
+                    'UNIDADES'      => $item['Units'],
+                ];
+            },
+            $sourceDataArray
+        );
+
+        // Parce to Chunks for optimization.
+        $chunks = array_chunk($targetDataArray, 1000);
+
+        // Run insert query in target connection transaction
+        DB::connection('oracle')->transaction(function () use ($chunks) {
+            foreach ($chunks as $chunk) {
+                $this->targetConnection->table('TIPOCAMBIOFIX')->upsert(
+                    $chunk,
+                    [
+                        'NOMBREDESERIE',
+                        'FECHA',
+                    ],
+                    [
+                        'TIPOCAMBIO',
+                        'UNIDADES'
+                    ]
+                );
+            }
+        });
     }
 
     public function energiaAsignadaZonadeCargaTable()
