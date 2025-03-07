@@ -200,6 +200,77 @@ class KualionDataRepository
 
     public function plantasDeGeneracionTable()
     {
+        // Query origin data
+        $sourceData =  $this->sourceConnection->select(
+            sprintf(
+                "SELECT %s FROM %s where teamId = %s and updated_at >= %s",
+                "id, name, nivelTension, nivelTensionGroup, clvCentral, nodoP, zonaCarga, unidad, anexoElementoDelECDDeUnidad, anexoElementoDelECD, cuentaDeOrdenDelECD, contractNumberId, fechaInicioDeOperacion, sistema, tipoDeTecnologia, rmu, created_at",
+                "enegence_dev.centralElectrica",
+                $this->teamId,
+                $this->startDate,
+            )
+        );
+        // Parse to Array
+        $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Map to target database fields
+        $targetDataArray = array_map(
+            function ($item) {
+                return [
+                    'ID'             => $item['id'],
+                    'NAME'           => $item['name'],
+                    'NIVELTENSION'   => $item['nivelTension'],
+                    'SISTEMA'        => $item['sistema'],
+                    'CREATED_AT'     => $item['created_at'],
+                    'RMU'            => $item['rmu'],
+                    'CLVCENTRAL'     => $item['clvCentral'],
+                    'NODOP'          => $item['nodoP'],
+                    'ZONACARGA'      => $item['zonaCarga'],
+                    'UNIDAD'         => $item['unidad'],
+                    'ANEXOELEMENTO'  => $item['anexoElementoDelECD'],
+                    'CUENTADEORDENDELECD'=> $item['cuentaDeOrdenDelECD'],
+                    'CONTRACTNUMBERID'   => $item['contractNumberId'],
+                    'NIVELTENSIONGROUP'  => $item['nivelTensionGroup'],
+                    'TIPODETECNOLOGIA'   => $item['tipoDeTecnologia'],
+                    'FECHAINICIODEOPERACION' => $item['fechaInicioDeOperacion'],
+                    'ANEXOELEMENTODELECDDEUNIDAD' => $item['anexoElementoDelECDDeUnidad'],
+                ];
+            },
+            $sourceDataArray
+        );
+
+        // Parce to Chunks for optimization.
+        $chunks = array_chunk($targetDataArray, 1000);
+
+        // Run insert query in target connection transaction
+        DB::connection('oracle')->transaction(function () use ($chunks) {
+            foreach ($chunks as $chunk) {
+                $this->targetConnection->table('PLANTASGENERACION')->upsert(
+                    $chunk,
+                    [
+                        'ID',
+                        'NAME',
+                    ],
+                    [
+                        'NIVELTENSION',
+                        'SISTEMA',
+                        'CREATED_AT',
+                        'RMU',
+                        'CLVCENTRAL',
+                        'NODOP',
+                        'ZONACARGA',
+                        'UNIDAD',
+                        'ANEXOELEMENTO',
+                        'CUENTADEORDENDELECD',
+                        'CONTRACTNUMBERID',
+                        'NIVELTENSIONGROUP',
+                        'TIPODETECNOLOGIA',
+                        'FECHAINICIODEOPERACION',
+                        'ANEXOELEMENTODELECDDEUNIDAD',
+                    ]
+                );
+            }
+        });
     }
 
     public function tipoCambioFixTable()
