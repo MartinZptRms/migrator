@@ -127,6 +127,75 @@ class KualionDataRepository
 
     public function listadoDeContratosTable()
     {
+        // Query origin data
+        $sourceData =  $this->sourceConnection->select(
+            sprintf(
+                "SELECT %s FROM %s where teamId = %s and updated_at >= %s",
+                "id, contractNumber, contractNumberId, name, clients, centrosDeCarga, centralesElectricas, created_at, updated_at, contract_template, vigenciaStartDate, vigenciaEndDate, currency, demandaContratada, energiaContratada, frecuenciaDeCalculo",
+                "enegence_cloud.contracts",
+                $this->teamId,
+                $this->startDate,
+            )
+        );
+        // Parse to Array
+        $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Map to target database fields
+        $targetDataArray = array_map(
+            function ($item) {
+                return [
+                    'ID'      => $item['id'],
+                    'CONTRACTNUMBER'   => $item['contractNumber'],
+                    'CONTRACTNUMBERID' => $item['contractNumberId'],
+                    'NAME'             => $item['name'],
+                    'CLIENT'           => $item['clients'],
+                    'CENTRODECARGA'    => $item['centrosDeCarga'],
+                    'CREATED_AT'       => $item['created_at'],
+                    'UPDATED_AT'       => $item['updated_at'],
+                    'INICIOVIGENCIA'   => $item['vigenciaStartDate'],
+                    'FINVIGENCIA'      => $item['vigenciaEndDate'],
+                    'MONEDA'           => $item['currency'],
+                    'DEMANDA'          => $item['demandaContratada'],
+                    'CONTRACT_TEMPLATE' => $item['contract_template'],
+                    'ENERGIACONTRATADA' => $item['energiaContratada'],
+                    'CENTRALESELECTRICAS' => $item['centralesElectricas'],
+                    'FRECUENCIADECALCULO' => $item['frecuenciaDeCalculo'],
+                ];
+            },
+            $sourceDataArray
+        );
+
+        // Parce to Chunks for optimization.
+        $chunks = array_chunk($targetDataArray, 1000);
+
+        // Run insert query in target connection transaction
+        DB::connection('oracle')->transaction(function () use ($chunks) {
+            foreach ($chunks as $chunk) {
+                $this->targetConnection->table('LISTADOCONTRATOS')->upsert(
+                    $chunk,
+                    [
+                        'ID',
+                        'CONTRACTNUMBER',
+                    ],
+                    [
+                        'CONTRACTNUMBERID',
+                        'NAME',
+                        'CLIENT',
+                        'CENTRODECARGA',
+                        'CREATED_AT',
+                        'UPDATED_AT',
+                        'INICIOVIGENCIA',
+                        'FINVIGENCIA',
+                        'MONEDA',
+                        'DEMANDA',
+                        'CONTRACT_TEMPLATE',
+                        'ENERGIACONTRATADA',
+                        'CENTRALESELECTRICAS',
+                        'FRECUENCIADECALCULO'
+                    ]
+                );
+            }
+        });
     }
 
     public function plantasDeGeneracionTable()
