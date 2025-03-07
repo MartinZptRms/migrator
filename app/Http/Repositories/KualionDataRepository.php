@@ -371,6 +371,72 @@ class KualionDataRepository
 
     public function energiaGeneradaporTipodeTeconologiaTable()
     {
+        // Query origin data
+        $sourceData =  $this->sourceConnection->select(
+            sprintf(
+                "SELECT %s FROM %s where Dia >= %s",
+                "Sistema, Dia, Hora, Eolica, Fotovoltaica, Biomasa, Carboelectrica, CicloCombinado, CombustionInterna, Geotermoelectrica, Hidroelectrica, Nucleoelectrica, TermicaConvencional, TurboGas, TotalOfEnergies",
+                "enegence_dev.energiaGeneradaTipoTecnologia",
+                $this->startDate,
+            )
+        );
+        // Parse to Array
+        $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Map to target database fields
+        $targetDataArray = array_map(
+            function ($item) {
+                return [
+                    'SISTEMA' => $item['Sistema'],
+                    'DIA'     => $item['Dia'],
+                    'HORA'    => $item['Hora'],
+                    'EOLICA'  => $item['Eolica'],
+                    'FOTOVOLTAICA' => $item['Fotovoltaica'],
+                    'BIOMASA' => $item['Biomasa'],
+                    'CARBOELECTRICA' => $item['Carboelectrica'],
+                    'CICLOCOMBINADO' => $item['CicloCombinado'],
+                    'COMBUSTIONINTERNA' => $item['CombustionInterna'],
+                    'GEOTERMOELECTRICA' => $item['Geotermoelectrica'],
+                    'HIDROELECTRICA' => $item['Hidroelectrica'],
+                    'NUCLEOELECTRICA' => $item['Nucleoelectrica'],
+                    'TERMICACONVENCIONAL' => $item['TermicaConvencional'],
+                    'TURBOGAS'     => $item['TurboGas'],
+                    'TOTALOFENERGIES' => $item['TotalOfEnergies'],
+                ];
+            },
+            $sourceDataArray
+        );
+
+        // Parce to Chunks for optimization.
+        $chunks = array_chunk($targetDataArray, 1000);
+
+        // Run insert query in target connection transaction
+        DB::connection('oracle')->transaction(function () use ($chunks) {
+            foreach ($chunks as $chunk) {
+                $this->targetConnection->table('ENERGIAGENERADAPORTIPODETECONOLOGIA')->upsert(
+                    $chunk,
+                    [
+                        'SISTEMA',
+                        'DIA',
+                        'HORA',
+                    ],
+                    [
+                        'EOLICA',
+                        'FOTOVOLTAICA',
+                        'BIOMASA',
+                        'CARBOELECTRICA',
+                        'CICLOCOMBINADO',
+                        'COMBUSTIONINTERNA',
+                        'GEOTERMOELECTRICA',
+                        'HIDROELECTRICA',
+                        'NUCLEOELECTRICA',
+                        'TERMICACONVENCIONAL',
+                        'TURBOGAS',
+                        'TOTALOFENERGIES'
+                    ]
+                );
+            }
+        });
     }
 
     public function medicionesHorariasCCTable()
