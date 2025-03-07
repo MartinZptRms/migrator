@@ -441,6 +441,60 @@ class KualionDataRepository
 
     public function medicionesHorariasCCTable()
     {
+        // Query origin data
+        $sourceData =  $this->sourceConnection->select(
+            sprintf(
+                "SELECT %s FROM %s where date >= %s",
+                "rpu, date, hour, energy, ogEnergy, tipo, ogTipo, block, createdAt",
+                "enegence_dev.measurements",
+                $this->startDate,
+            )
+        );
+        // Parse to Array
+        $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Map to target database fields
+        $targetDataArray = array_map(
+            function ($item) {
+                return [
+                    'RPU' => $item['rpu'],
+                    'FECHA' => $item['date'],
+                    'HORA' => $item['hour'],
+                    'ENERGIA' => $item['energy'],
+                    'ENERGIAORIGINAL' => $item['ogEnergy'],
+                    'TIPO' => $item['tipo'],
+                    'TIPOORIGINAL' => $item['ogTipo'],
+                    'BLOQUEBIP' => $item['block'],
+                    'CREATED_AT' => $item['createdAt'],
+                ];
+            },
+            $sourceDataArray
+        );
+
+        // Parce to Chunks for optimization.
+        $chunks = array_chunk($targetDataArray, 1000);
+
+        // Run insert query in target connection transaction
+        DB::connection('oracle')->transaction(function () use ($chunks) {
+            foreach ($chunks as $chunk) {
+                $this->targetConnection->table('MEDICIONESHORARIASCC')->upsert(
+                    $chunk,
+                    [
+                        'RPU',
+                        'FECHA',
+                        'HORA',
+                    ],
+                    [
+                        'ENERGIA',
+                        'ENERGIAORIGINAL',
+                        'TIPO',
+                        'TIPOORIGINAL',
+                        'BLOQUEBIP',
+                        'CREATED_AT',
+                    ]
+                );
+            }
+        });
     }
 
     public function medicionesHorariasCETable()
