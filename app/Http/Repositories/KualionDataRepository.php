@@ -444,10 +444,11 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where date >= %s",
+                "SELECT %s FROM %s where date >= %s and teamId = %s",
                 "rpu, date, hour, energy, ogEnergy, tipo, ogTipo, block, createdAt",
                 "enegence_dev.measurements",
                 $this->startDate,
+                $this->teamId,
             )
         );
         // Parse to Array
