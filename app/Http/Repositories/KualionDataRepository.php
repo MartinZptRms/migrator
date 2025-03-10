@@ -28,7 +28,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where teamId = %s and created_at >= %s",
+                "SELECT %s FROM %s where teamId = %s and created_at >= '%s'",
                 "alias, name, rfc, email, municipio, contractNumber, contractNumberId",
                 "enegence_cloud.invoiceRecipients",
                 $this->teamId,
@@ -134,7 +134,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where teamId = %s and updated_at >= %s",
+                "SELECT %s FROM %s where teamId = %s and updated_at >= '%s'",
                 "id, contractNumber, contractNumberId, name, clients, centrosDeCarga, centralesElectricas, created_at, updated_at, contract_template, vigenciaStartDate, vigenciaEndDate, currency, demandaContratada, energiaContratada, frecuenciaDeCalculo",
                 "enegence_cloud.contracts",
                 $this->teamId,
@@ -207,7 +207,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where teamId = %s and updated_at >= %s",
+                "SELECT %s FROM %s where teamId = %s and updated_at >= '%s'",
                 "id, name, nivelTension, nivelTensionGroup, clvCentral, nodoP, zonaCarga, unidad, anexoElementoDelECDDeUnidad, anexoElementoDelECD, cuentaDeOrdenDelECD, contractNumberId, fechaInicioDeOperacion, sistema, tipoDeTecnologia, rmu, created_at",
                 "enegence_dev.centralElectrica",
                 $this->teamId,
@@ -282,7 +282,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where UpdateDate >= %s",
+                "SELECT %s FROM %s where UpdateDate >= '%s'",
                 "Serie_Name, Period, Value, Units",
                 "enegence_dev.tipocambio_fix",
                 $this->startDate,
@@ -330,7 +330,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where updated_at >= %s",
+                "SELECT %s FROM %s where updated_at >= '%s'",
                 "Zona_Carga, Fecha, Hora, Total_Cargas",
                 "enegence_dev.energiaasignadazonascarga_historico",
                 $this->startDate,
@@ -378,7 +378,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where Dia >= %s",
+                "SELECT %s FROM %s where Dia >= '%s'",
                 "Sistema, Dia, Hora, Eolica, Fotovoltaica, Biomasa, Carboelectrica, CicloCombinado, CombustionInterna, Geotermoelectrica, Hidroelectrica, Nucleoelectrica, TermicaConvencional, TurboGas, TotalOfEnergies",
                 "enegence_dev.energiaGeneradaTipoTecnologia",
                 $this->startDate,
@@ -448,7 +448,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where date >= %s and teamId = %s",
+                "SELECT %s FROM %s where date >= '%s' and teamId = %s",
                 "rpu, date, hour, energy, ogEnergy, tipo, ogTipo, block, createdAt",
                 "enegence_dev.measurements",
                 $this->startDate,
@@ -507,7 +507,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where fecha >= %s and teamId = %s",
+                "SELECT %s FROM %s where fecha >= '%s' and teamId = %s",
                 "nombre, unidad, claveNodo, fecha, hora, energiakWh, blockCE, ogEnergy, tipo, ogTipo, createdAt",
                 "enegence_dev.medicionesCentralElectrica",
                 $this->startDate,
@@ -575,17 +575,17 @@ class KualionDataRepository
             sprintf( // From union of 3 selects (ofertaCompra, ofertasDelGIProgramaDeConsumo, ofertasDeImportacion)
                 "%s UNION ALL %s UNION ALL %s",
                 sprintf(
-                    "SELECT %s FROM enegence_dev.ofertaCompra WHERE fecha >= %s GROUP BY sistema, fecha",
+                    "SELECT %s FROM enegence_dev.ofertaCompra WHERE fecha >= '%s' GROUP BY sistema, fecha",
                     "sistema, fecha, SUM(demandaFija) AS ofertaCompra, 0 AS consumoGI, 0 AS ofertaImportacion",
                     $this->startDate,
                 ),
                 sprintf(
-                    "SELECT %s FROM enegence_dev.ofertasDelGIProgramaDeConsumo WHERE fechaOperacion >= %s GROUP BY sistema, fechaOperacion",
+                    "SELECT %s FROM enegence_dev.ofertasDelGIProgramaDeConsumo WHERE fechaOperacion >= '%s' GROUP BY sistema, fechaOperacion",
                     "sistema, fechaOperacion as fecha, 0 AS ofertaCompra, SUM(potenciaMedia) AS consumoGI, 0 AS ofertaImportacion",
                     $this->startDate,
                 ),
                 sprintf(
-                    "SELECT %s FROM enegence_dev.ofertasDeImportacion WHERE fechaOperacion >= %s GROUP BY sistema, fechaOperacion",
+                    "SELECT %s FROM enegence_dev.ofertasDeImportacion WHERE fechaOperacion >= '%s' GROUP BY sistema, fechaOperacion",
                     "sistema, fechaOperacion as fecha, 0 AS ofertaCompra, 0 As consumoGI, SUM(ImportacionFija + BloquePotencia01 + BloquePotencia02 + BloquePotencia03) AS ofertaImportacion",
                     $this->startDate,
                 )
@@ -637,7 +637,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where created_at >= %s and team_id = %s",
+                "SELECT %s FROM %s where created_at >= '%s' and team_id = %s",
                 "indexed_gas_prices.index, date, price",
                 "enegence_dev.indexed_gas_prices",
                 $this->startDate,
@@ -684,11 +684,10 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where Fecha >= %s and Fecha <= %s",
+                "SELECT %s FROM %s where Fecha >= '%s'",
                 "Proceso, Sistema, Clv_Nodo, Fecha, Hora, PML, PML_ENE, PML_PER, PML_CNG",
                 "enegence_dev.pmlMtr",
-                '2023-01-01',// $this->startDate,
-                '2023-07-01',
+                $this->startDate,
             )
         );
         // Parse to Array
@@ -743,7 +742,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where Fecha >= %s",
+                "SELECT %s FROM %s where Fecha >= '%s'",
                 "Proceso, Sistema, ZonaCarga, Fecha, Hora, Precio_Zonal, Componente_Energia, Componente_Perdida, Componente_Congestion",
                 "enegence_dev.precioEnergiaNodoDistribuidoMda",
                 $this->startDate,
@@ -801,7 +800,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where Fecha >= %s",
+                "SELECT %s FROM %s where Fecha >= '%s'",
                 "Proceso, Sistema, ZonaCarga, Fecha, Hora, Precio_Zonal, Componente_Energia, Componente_Perdida, Componente_Congestion",
                 "enegence_dev.precioEnergiaNodoDistribuidoMtr",
                 $this->startDate,
@@ -859,7 +858,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where Fecha >= %s",
+                "SELECT %s FROM %s where Fecha >= '%s'",
                 "Fecha, Hora, Enlace, PrecioEnlace",
                 "enegence_dev.ercot",
                 $this->startDate,
@@ -874,8 +873,8 @@ class KualionDataRepository
                 return [
                     'FECHA'  => $item['Fecha'],
                     'HORA'   => $item['Hora'],
-                    'ENLACE' => $item['Proceso'],
-                    'PRECIOENLACE' => $item['Sistema'],
+                    'ENLACE' => $item['Enlace'],
+                    'PRECIOENLACE' => $item['PrecioEnlace'],
                 ];
             },
             $sourceDataArray
@@ -907,7 +906,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where date >= %s AND teamId = %s",
+                "SELECT %s FROM %s where date >= '%s' AND teamId = %s",
                 "rpu, date, hour, energy, createdAt",
                 "enegence_dev.proyecciones",
                 $this->startDate,
@@ -958,7 +957,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where Period >= %s",
+                "SELECT %s FROM %s where Period >= '%s'",
                 "Serie_Name, Period, Value, Units",
                 "enegence_dev.tipoDeCambioLiquidacion",
                 $this->startDate,
@@ -1006,7 +1005,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where fecha_oper >= %s AND teamId= %s",
+                "SELECT %s FROM %s where fecha_oper >= '%s' AND teamId= %s",
                 "cuenta_de_orden, fecha_oper, fecha_fuf, fuecd, fuf, folio, liquidacion, ful, mes, semana, monto_total, iva, total_neto, monto_total_dif, iva_dif, total_neto_dif",
                 "enegence_dev.ecd_montos_diarios",
                 $this->startDate,
@@ -1079,7 +1078,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s %s %s FROM %s where fecha_oper >= %s AND teamId= %s",
+                "SELECT %s %s %s FROM %s where fecha_oper >= '%s' AND teamId= %s",
                 " cuenta_de_orden, fuf, folio, liquidacion, ful, anexo_elemento, nodo, fecha_oper, hora, monto_horario, precio,  potencia_mda, potencia_mtr, monto_diario, precio_gsi, fdp,  precio_rsup, precio_rnr10, precio_rr10, precio_rreg, ",
                 " potencia_erc_mda, potencia_erc_mtr,  cap_prog_rsup_mda, cap_prog_rsup_mtr, cap_prog_rnr10_mda, cap_prog_rnr10_mtr, cap_prog_rr10_mda, cap_prog_rr10_mtr, cap_prog_rreg_mda, cap_prog_rreg_mtr,  zona_reserva, monto, potencia, factor, ",
                 " clv_elemento_tbf, division_distribucion, tipo_tarifa, precio_tarifa,  cantidad, elemento, clv_nodo_origen, clv_nodo_retiro, pml_cng_origen, pml_cng_retiro,  factor_pond_retiro, factor_pond_origen, energia, energia_fisica, precio_sobrecobro, fuecd ",
@@ -1223,7 +1222,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where Fecha >= %s",
+                "SELECT %s FROM %s where Fecha >= '%s'",
                 "Proceso, Sistema, Clv_Nodo, Fecha, Hora, PML, PML_ENE, PML_PER, PML_CNG",
                 "enegence_dev.pmlMda",
                 $this->startDate,
@@ -1291,7 +1290,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where updatedAt >= %s AND teamId = %s",
+                "SELECT %s FROM %s where updatedAt >= '%s' AND teamId = %s",
                 "Sistema, CentroControlRegional, ZonaCarga, Clave, NombreNodo, NivelTension, TipoCargaDM, TipoCargaIM, TipoGeneracionDM, TipoGeneracionIM, ZonaOpeTrans, GerenciaRegTrans, ZonaDistribucion, GerenciaDivDist, EntidadInegi, Municipio, RegionTransmision",
                 "enegence_dev.nodosPAccumulative",
                 $this->startDate,
@@ -1366,7 +1365,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where fecha >= %s AND teamId = %s",
+                "SELECT %s FROM %s where fecha >= '%s' AND teamId = %s",
                 "proceso, usuarioCalificado, anexoElementoDelECD, nodo, participante, fecha, hora, demandaFijaMw, estatusEnvio",
                 "enegence_dev.ofertasGeneradasCompra",
                 $this->startDate,
@@ -1425,7 +1424,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where fecha >= %s AND teamId = %s",
+                "SELECT %s FROM %s where fecha >= '%s' AND teamId = %s",
                 "tipoOferta, clvCentral, clvUnidad, proceso, estatusAsignacion, clvParticipante, fecha, fechaFinal, hora, vigencia, estatusEnvio",
                 "enegence_dev.ofertasGeneradaVenta",
                 $this->startDate,
@@ -1492,27 +1491,27 @@ class KualionDataRepository
             sprintf(
                 " %s UNION ALL %s UNION ALL %s UNION ALL %s UNION ALL %s UNION ALL %s ",
                 sprintf(
-                    "SELECT Sistema, Fecha AS FechaOperacion, SUM(LimiteDespacho_Max) AS LimiteDespacho_Max_Termica, 0 AS LimiteDespacho_Max_Hidro, 0 AS PronosticoMW, 0 AS PotenciaMedia_NoDespachable, 0 AS PotenciaMedia_GIPG, 0 AS ExportacionFija, 0 AS BloquePotencia01, 0 AS BloquePotencia02, 0 AS BloquePotencia03 FROM enegence_dev.ofertaVentaTermica WHERE Fecha >= %s GROUP BY Sistema, Fecha",
+                    "SELECT Sistema, Fecha AS FechaOperacion, SUM(LimiteDespacho_Max) AS LimiteDespacho_Max_Termica, 0 AS LimiteDespacho_Max_Hidro, 0 AS PronosticoMW, 0 AS PotenciaMedia_NoDespachable, 0 AS PotenciaMedia_GIPG, 0 AS ExportacionFija, 0 AS BloquePotencia01, 0 AS BloquePotencia02, 0 AS BloquePotencia03 FROM enegence_dev.ofertaVentaTermica WHERE Fecha >= '%s' GROUP BY Sistema, Fecha",
                     $this->startDate
                 ),
                 sprintf(
-                    "SELECT Sistema, Fecha AS FechaOperacion, 0 AS LimiteDespacho_Max_Termica, SUM(LimiteDespacho_Max) AS LimiteDespacho_Max_Hidro, 0 AS PronosticoMW, 0 AS PotenciaMedia_NoDespachable, 0 AS PotenciaMedia_GIPG, 0 AS ExportacionFija, 0 AS BloquePotencia01, 0 AS BloquePotencia02, 0 AS BloquePotencia03 FROM enegence_dev.ofertaVentaHidroelectrica WHERE Fecha >= %s GROUP BY Sistema, Fecha",
+                    "SELECT Sistema, Fecha AS FechaOperacion, 0 AS LimiteDespacho_Max_Termica, SUM(LimiteDespacho_Max) AS LimiteDespacho_Max_Hidro, 0 AS PronosticoMW, 0 AS PotenciaMedia_NoDespachable, 0 AS PotenciaMedia_GIPG, 0 AS ExportacionFija, 0 AS BloquePotencia01, 0 AS BloquePotencia02, 0 AS BloquePotencia03 FROM enegence_dev.ofertaVentaHidroelectrica WHERE Fecha >= '%s' GROUP BY Sistema, Fecha",
                     $this->startDate
                 ),
                 sprintf(
-                    "SELECT Sistema, Fecha AS FechaOperacion, 0 AS LimiteDespacho_Max_Termica, 0 AS LimiteDespacho_Max_Hidro, SUM(PronosticoMW) AS PronosticoMW, 0 AS PotenciaMedia_NoDespachable, 0 AS PotenciaMedia_GIPG, 0 AS ExportacionFija, 0 AS BloquePotencia01, 0 AS BloquePotencia02, 0 AS BloquePotencia03 FROM enegence_dev.ofertaVentaRecursoIntermitenteDespachable WHERE Fecha >= %s GROUP BY Sistema, Fecha",
+                    "SELECT Sistema, Fecha AS FechaOperacion, 0 AS LimiteDespacho_Max_Termica, 0 AS LimiteDespacho_Max_Hidro, SUM(PronosticoMW) AS PronosticoMW, 0 AS PotenciaMedia_NoDespachable, 0 AS PotenciaMedia_GIPG, 0 AS ExportacionFija, 0 AS BloquePotencia01, 0 AS BloquePotencia02, 0 AS BloquePotencia03 FROM enegence_dev.ofertaVentaRecursoIntermitenteDespachable WHERE Fecha >= '%s' GROUP BY Sistema, Fecha",
                     $this->startDate
                 ),
                 sprintf(
-                    "SELECT Sistema, Fecha AS FechaOperacion, 0 AS LimiteDespacho_Max_Termica, 0 AS LimiteDespacho_Max_Hidro, 0 AS PronosticoMW, SUM(PotenciaMedia) AS PotenciaMedia_NoDespachable, 0 AS PotenciaMedia_GIPG, 0 AS ExportacionFija, 0 AS BloquePotencia01, 0 AS BloquePotencia02, 0 AS BloquePotencia03 FROM enegence_dev.ofertaVentaNoDespachable WHERE Fecha >= %s GROUP BY Sistema, Fecha",
+                    "SELECT Sistema, Fecha AS FechaOperacion, 0 AS LimiteDespacho_Max_Termica, 0 AS LimiteDespacho_Max_Hidro, 0 AS PronosticoMW, SUM(PotenciaMedia) AS PotenciaMedia_NoDespachable, 0 AS PotenciaMedia_GIPG, 0 AS ExportacionFija, 0 AS BloquePotencia01, 0 AS BloquePotencia02, 0 AS BloquePotencia03 FROM enegence_dev.ofertaVentaNoDespachable WHERE Fecha >= '%s' GROUP BY Sistema, Fecha",
                     $this->startDate
                 ),
                 sprintf(
-                    "SELECT Sistema, FechaOperacion, 0 AS LimiteDespacho_Max_Termica, 0 AS LimiteDespacho_Max_Hidro, 0 AS PronosticoMW, 0 AS PotenciaMedia_NoDespachable, SUM(PotenciaMedia) AS PotenciaMedia_GIPG, 0 AS ExportacionFija, 0 AS BloquePotencia01, 0 AS BloquePotencia02, 0 AS BloquePotencia03 FROM enegence_dev.ofertasDelGIProgramaDeGeneracion WHERE FechaOperacion >= %s GROUP BY Sistema, FechaOperacion",
+                    "SELECT Sistema, FechaOperacion, 0 AS LimiteDespacho_Max_Termica, 0 AS LimiteDespacho_Max_Hidro, 0 AS PronosticoMW, 0 AS PotenciaMedia_NoDespachable, SUM(PotenciaMedia) AS PotenciaMedia_GIPG, 0 AS ExportacionFija, 0 AS BloquePotencia01, 0 AS BloquePotencia02, 0 AS BloquePotencia03 FROM enegence_dev.ofertasDelGIProgramaDeGeneracion WHERE FechaOperacion >= '%s' GROUP BY Sistema, FechaOperacion",
                     $this->startDate
                 ),
                 sprintf(
-                    "SELECT Sistema, FechaOperacion, 0 AS LimiteDespacho_Max_Termica, 0 AS LimiteDespacho_Max_Hidro, 0 AS PronosticoMW, 0 AS PotenciaMedia_NoDespachable, 0 AS PotenciaMedia_GIPG, SUM(ExportacionFija) AS ExportacionFija, SUM(BloquePotencia01) AS BloquePotencia01, SUM(BloquePotencia02) AS BloquePotencia02, SUM(BloquePotencia03) AS BloquePotencia03 FROM enegence_dev.ofertasDeExportacion WHERE FechaOperacion >= %s GROUP BY Sistema, FechaOperacion",
+                    "SELECT Sistema, FechaOperacion, 0 AS LimiteDespacho_Max_Termica, 0 AS LimiteDespacho_Max_Hidro, 0 AS PronosticoMW, 0 AS PotenciaMedia_NoDespachable, 0 AS PotenciaMedia_GIPG, SUM(ExportacionFija) AS ExportacionFija, SUM(BloquePotencia01) AS BloquePotencia01, SUM(BloquePotencia02) AS BloquePotencia02, SUM(BloquePotencia03) AS BloquePotencia03 FROM enegence_dev.ofertasDeExportacion WHERE FechaOperacion >= '%s' GROUP BY Sistema, FechaOperacion",
                     $this->startDate
                 ),
             )
@@ -1569,7 +1568,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where startDateParam >= %s AND teamId = %s",
+                "SELECT %s FROM %s where startDateParam >= '%s' AND teamId = %s",
                 "contractCalculationNumber, startDateParam, endDateParam, centrosDeCargaParam, energyAmount, capacityAmount, cleanEnergyCertificateAmount, regulatedTariffAmount, associatedProductsAmount, marketCostAmount, othersAmount, subtotal, iva, total",
                 "enegence_dev.calculationsResults",
                 $this->startDate,
