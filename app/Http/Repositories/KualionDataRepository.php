@@ -42,6 +42,7 @@ class KualionDataRepository
         $targetDataArray = array_map(
             function ($item) {
                 return [
+                    'ID'      => $item['id'],
                     'SHORTNAME'      => $item['alias'],
                     'NAME'           => $item['name'],
                     'RFC'            => $item['rfc'],
@@ -272,6 +273,100 @@ class KualionDataRepository
                         'TIPODETECNOLOGIA',
                         'FECHAINICIODEOPERACION',
                         'ANEXOELEMENTODELECDDEUNIDAD',
+                    ]
+                );
+            }
+        });
+    }
+
+    public function centrosDeCargaTable()
+    {
+        // Query origin data
+        $sourceData =  $this->sourceConnection->select(
+            sprintf(
+                "SELECT %s FROM %s where teamId = %s and updated_at >= '%s'",
+                "id, anexoElementoDelECD, cuentaDeOrdenDelECD, rpu, rmu, grupoTarifario, nivelTension, nivelTensionGroup, nodoP, zonaCarga, zonaInyeccionGas, zonaExtraccionGas, sistema, divisionDistribucion, factorCarga, created_at, updated_at, contractNumberId, clients, units, aliasDeCliente, latitude, longitude, fechaInicioDeOperacion, agrupador, usuarioCalificado",
+                "enegence_dev.centrosCarga",
+                $this->teamId,
+                $this->startDate,
+            )
+        );
+        // Parse to Array
+        $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Map to target database fields
+        $targetDataArray = array_map(
+            function ($item) {
+                return [
+                    'ID' => $item['id'],
+                    'ANEXOELEMENTODELECD' => $item['anexoElementoDelECD'],
+                    'CUENTADEORDENDELECD' => $item['cuentaDeOrdenDelECD'],
+                    'RPU' => $item['rpu'],
+                    'RMU' => $item['rmu'],
+                    'GRUPOTARIFARIO' => $item['grupoTarifario'],
+                    'NIVELTENSION' => $item['nivelTension'],
+                    'NIVELTENSIONGROUP' => $item['nivelTensionGroup'],
+                    'NODOP' => $item['nodoP'],
+                    'ZONACARGA' => $item['zonaCarga'],
+                    'ZONAINYECCIONGAS' => $item['zonaInyeccionGas'],
+                    'ZONAEXTRACCIONGAS' => $item['zonaExtraccionGas'],
+                    'SISTEMA' => $item['sistema'],
+                    'DIVISIONDISTRIBUCION' => $item['divisionDistribucion'],
+                    'FACTORCARGA' => $item['factorCarga'],
+                    'CREATED_AT' => $item['created_at'],
+                    'UPDATED_AT' => $item['updated_at'],
+                    'CONTRACTNUMBERID' => $item['contractNumberId'],
+                    'CLIENTS' => $item['clients'],
+                    'UNITS' => $item['units'],
+                    'ALIASDECLIENTE' => $item['aliasDeCliente'],
+                    'LATITUDE' => $item['latitude'],
+                    'LONGITUDE' => $item['longitude'],
+                    'FECHAINICIODEOPERACION' => $item['fechaInicioDeOperacion'],
+                    'AGRUPADOR' => $item['agrupador'],
+                    'USUARIOCALIFICADO' => $item['usuarioCalificado'],
+                ];
+            },
+            $sourceDataArray
+        );
+
+        // Parce to Chunks for optimization.
+        $chunks = array_chunk($targetDataArray, 1000);
+
+        // Run insert query in target connection transaction
+        DB::connection('oracle')->transaction(function () use ($chunks) {
+            foreach ($chunks as $chunk) {
+                $this->targetConnection->table('CENTROSDECARGA')->upsert(
+                    $chunk,
+                    [
+                        'ID',
+                        'RPU',
+                    ],
+                    [
+                        'ANEXOELEMENTODELECD',
+                        'CUENTADEORDENDELECD',
+                        'RPU',
+                        'RMU',
+                        'GRUPOTARIFARIO',
+                        'NIVELTENSION',
+                        'NIVELTENSIONGROUP',
+                        'NODOP',
+                        'ZONACARGA',
+                        'ZONAINYECCIONGAS',
+                        'ZONAEXTRACCIONGAS',
+                        'SISTEMA',
+                        'DIVISIONDISTRIBUCION',
+                        'FACTORCARGA',
+                        'CREATED_AT',
+                        'UPDATED_AT',
+                        'CONTRACTNUMBERID',
+                        'CLIENTS',
+                        'UNITS',
+                        'ALIASDECLIENTE',
+                        'LATITUDE',
+                        'LONGITUDE',
+                        'FECHAINICIODEOPERACION',
+                        'AGRUPADOR',
+                        'USUARIOCALIFICADO',
                     ]
                 );
             }
