@@ -17,10 +17,39 @@ class KualionDataRepository
         $this->sourceConnection = DB::connection('mysql');
         $this->targetConnection = DB::connection('oracle');
         if (null == $startDate) {
-            $this->startDate = Carbon::now()->subWeek()->toDateString();
+            $this->startDate = Carbon::now()->subDay()->toDateString();
         } else {
             $this->startDate = $startDate;
         }
+    }
+    public function dispatchTables()
+    {
+        $this->contrapartesTable();
+        $this->diccionarioDeFoliosTable();
+        $this->listadoDeContratosTable();
+        $this->plantasDeGeneracionTable();
+        $this->centrosDeCargaTable();
+        $this->tipoCambioFixTable();
+        $this->energiaAsignadaZonadeCargaTable();
+        $this->energiaGeneradaporTipodeTeconologiaTable();
+        $this->medicionesHorariasCCTable();
+        $this->medicionesHorariasCETable();
+        $this->ofertaDeCompraPorTipoTable();
+        $this->preciosGasHBTable();
+        $this->preciosPMLMTRTable();
+        $this->preciosPNDMDATable();
+        $this->preciosPNDMTRTable();
+        $this->preciosSPOTERCOTTable();
+        $this->proyeccionesDeEnergiaTable();
+        $this->tipoDeCambioLiquidacionTable();
+        $this->liquidacionesDiariasECDTable();
+        $this->liquidacionesHorariasECDTable();
+        $this->preciosPMLMDATable();
+        $this->nodosPTable();
+        $this->ofertasCompraEnergiaTable();
+        $this->ofertasVentaEnergiaTable();
+        $this->ofertasVentaPorTipoTable();
+        $this->calculoDeContratosTable();
     }
 
     public function contrapartesTable()
@@ -647,7 +676,6 @@ class KualionDataRepository
         });
     }
 
-    // TODO
     public function ofertaDeCompraPorTipoTable()
     {
         // Query origin data
@@ -1421,20 +1449,18 @@ class KualionDataRepository
                         'ZONACARGA',
                         'CLAVE',
                         'NOMBRENODO',
-                    ],
-                    [
+                        'ZONAOPETRANS',
+                        'ENTIDADINEGI',
+                        'MUNICIPIO',
+                        'REGIONTRANSMISION',
+                        'GERENCIADIVDIST',
                         'NIVELTENSION',
                         'TIPOCARGADM',
                         'TIPOCARGAIM',
                         'TIPOGENERACIONDM',
                         'TIPOGENERACIONIM',
-                        'ZONAOPETRANS',
                         'GERENCIAREGTRANS',
                         'ZONADISTRIBUCION',
-                        'GERENCIADIVDIST',
-                        'ENTIDADINEGI',
-                        'MUNICIPIO',
-                        'REGIONTRANSMISION',
                     ]
                 );
             }
