@@ -29,7 +29,7 @@ class KualionDataRepository
         $sourceData =  $this->sourceConnection->select(
             sprintf(
                 "SELECT %s FROM %s where teamId = %s and created_at >= '%s'",
-                "alias, name, rfc, email, municipio, contractNumber, contractNumberId",
+                "id, alias, name, rfc, email, municipio, contractNumber, contractNumberId",
                 "enegence_cloud.invoiceRecipients",
                 $this->teamId,
                 $this->startDate,
@@ -63,6 +63,7 @@ class KualionDataRepository
                 $this->targetConnection->table('CONTRAPARTES')->upsert(
                     $chunk,
                     [
+                        'ID',
                         'NAME',
                         'RFC',
                     ],
@@ -637,7 +638,7 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where created_at >= '%s' and team_id = %s",
+                "SELECT %s FROM %s where date >= '%s' and team_id = %s",
                 "indexed_gas_prices.index, date, price",
                 "enegence_dev.indexed_gas_prices",
                 $this->startDate,
@@ -712,7 +713,7 @@ class KualionDataRepository
         );
 
         // Parce to Chunks for optimization.
-        $chunks = array_chunk($targetDataArray, 1000);
+        $chunks = array_chunk($targetDataArray, 2000);
 
         // Run insert query in target connection transaction
         DB::connection('oracle')->transaction(function () use ($chunks) {
@@ -970,7 +971,7 @@ class KualionDataRepository
         $targetDataArray = array_map(
             function ($item) {
                 return [
-                    'NOMBRESERIE'  => $item['Serie_Name'],
+                    'NOMBREDESERIE'  => $item['Serie_Name'],
                     'FECHA'   => $item['Period'],
                     'TIPOCAMBIO' => $item['Value'],
                     'UNIDADES' => $item['Units'],
@@ -988,7 +989,7 @@ class KualionDataRepository
                 $this->targetConnection->table('TIPOCAMBIOLIQUIDACION')->upsert(
                     $chunk,
                     [
-                        'NOMBRESERIE',
+                        'NOMBREDESERIE',
                         'FECHA',
                         'UNIDADES',
                     ],
@@ -1165,9 +1166,9 @@ class KualionDataRepository
                         'LIQUIDACION',
                         'HORA',
                         'FECHAOPER',
+                        'FOLIO',
                     ],
                     [
-                        'FOLIO',
                         'ANEXOELEMENTO',
                         'NODO',
                         'MONTOHORARIO',
@@ -1250,7 +1251,7 @@ class KualionDataRepository
         );
 
         // Parce to Chunks for optimization.
-        $chunks = array_chunk($targetDataArray, 1000);
+        $chunks = array_chunk($targetDataArray, 2000);
 
         // Run insert query in target connection transaction
         DB::connection('oracle')->transaction(function () use ($chunks) {
@@ -1276,7 +1277,7 @@ class KualionDataRepository
     }
 
     // TODO
-    public function facturaciónCENACETable()
+    public function facturacionCENACETable()
     {
     }
 
@@ -1290,11 +1291,10 @@ class KualionDataRepository
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
-                "SELECT %s FROM %s where updatedAt >= '%s' AND teamId = %s",
+                "SELECT %s FROM %s where updatedAt >= '%s'",
                 "Sistema, CentroControlRegional, ZonaCarga, Clave, NombreNodo, NivelTension, TipoCargaDM, TipoCargaIM, TipoGeneracionDM, TipoGeneracionIM, ZonaOpeTrans, GerenciaRegTrans, ZonaDistribucion, GerenciaDivDist, EntidadInegi, Municipio, RegionTransmision",
                 "enegence_dev.nodosPAccumulative",
                 $this->startDate,
-                $this->teamId,
             )
         );
         // Parse to Array
@@ -1426,7 +1426,7 @@ class KualionDataRepository
             sprintf(
                 "SELECT %s FROM %s where fecha >= '%s' AND teamId = %s",
                 "tipoOferta, clvCentral, clvUnidad, proceso, estatusAsignacion, clvParticipante, fecha, fechaFinal, hora, vigencia, estatusEnvio",
-                "enegence_dev.ofertasGeneradaVenta",
+                "enegence_dev.ofertasGeneradasVenta",
                 $this->startDate,
                 $this->teamId,
             )
@@ -1525,8 +1525,8 @@ class KualionDataRepository
         $targetDataArray = array_map(
             function ($item) {
                 return [
-                    'SISTEMA'              => $item['sistema'],
-                    'FECHA'                => $item['fecha'],
+                    'SISTEMA'              => $item['Sistema'],
+                    'FECHA'                => $item['FechaOperacion'],
                     'OFERTATERMICA'        => $item['LimiteDespacho_Max_Termica'],
                     'OFERTAHIDROELECTRICA' => $item['LimiteDespacho_Max_Hidro'],
                     'OFERTARENOVABLE'      => $item['PronosticoMW'],
@@ -1544,7 +1544,7 @@ class KualionDataRepository
         // Run insert query in target connection transaction
         DB::connection('oracle')->transaction(function () use ($chunks) {
             foreach ($chunks as $chunk) {
-                $this->targetConnection->table('OFERTASVENTAPORTIPO’')->upsert(
+                $this->targetConnection->table('OFERTASVENTAPORTIPO')->upsert(
                     $chunk,
                     [
                         'SISTEMA',
@@ -1591,7 +1591,7 @@ class KualionDataRepository
                     'CELS' => $item['cleanEnergyCertificateAmount'],
                     'TARIFASREGULADAS' => $item['regulatedTariffAmount'],
                     'PRODUCTOSASOCIADOS' => $item['associatedProductsAmount'],
-                    'COSTOSDELMERCADO' => $item['marketCostAmount'],
+                    'COSTOSDEMERCADO' => $item['marketCostAmount'],
                     'OTROS' => $item['othersAmount'],
                     'SUBTOTAL' => $item['subtotal'],
                     'IVA' => $item['iva'],
@@ -1621,7 +1621,7 @@ class KualionDataRepository
                         'CELS',
                         'TARIFASREGULADAS',
                         'PRODUCTOSASOCIADOS',
-                        'COSTOSDELMERCADO',
+                        'COSTOSDEMERCADO',
                         'OTROS',
                         'SUBTOTAL',
                         'IVA',
