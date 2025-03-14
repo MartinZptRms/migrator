@@ -545,7 +545,7 @@ class KualionDataRepository
         $sourceData =  $this->sourceConnection->select(
             sprintf(
                 "SELECT %s FROM %s where date >= '%s' and teamId = %s",
-                "rpu, date, hour, energy, ogEnergy, tipo, ogTipo, block, createdAt",
+                "rpu, date, hour, energy, KVARh, ogEnergy, tipo, ogTipo, block, createdAt",
                 "enegence_dev.measurements",
                 $this->startDate,
                 $this->teamId,
@@ -562,6 +562,7 @@ class KualionDataRepository
                     'FECHA' => $item['date'],
                     'HORA' => $item['hour'],
                     'ENERGIA' => $item['energy'],
+                    'KVAR' => $item['KVARh'],
                     'ENERGIAORIGINAL' => $item['ogEnergy'],
                     'TIPO' => $item['tipo'],
                     'TIPOORIGINAL' => $item['ogTipo'],
@@ -587,6 +588,7 @@ class KualionDataRepository
                     ],
                     [
                         'ENERGIA',
+                        'KVAR',
                         'ENERGIAORIGINAL',
                         'TIPO',
                         'TIPOORIGINAL',
