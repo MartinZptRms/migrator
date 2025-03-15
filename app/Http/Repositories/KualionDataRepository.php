@@ -15,12 +15,7 @@ class KualionDataRepository
     public function __construct($startDate = null)
     {
         $this->sourceConnection = DB::connection('mysql');
-        $this->sourceConnection->getPdo()->exec("SET NAMES 'utf8mb4'");
-        $this->sourceConnection->getPdo()->exec("SET CHARACTER SET utf8mb4");
-
         $this->targetConnection = DB::connection('oracle');
-            $this->targetConnection->getPdo()->exec("ALTER SESSION SET NLS_CHARSET_NAME = AL32UTF8");
-
         if (null == $startDate) {
             $this->startDate = Carbon::now()->subDay()->toDateString();
         } else {
@@ -207,6 +202,11 @@ class KualionDataRepository
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
         // Map to target database fields
         $targetDataArray = array_map(
             function ($item) {
@@ -264,6 +264,11 @@ class KualionDataRepository
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
         // Map to target database fields
         $targetDataArray = array_map(
             function ($item) {
@@ -314,6 +319,11 @@ class KualionDataRepository
         );
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
 
         // Map to target database fields
         $targetDataArray = array_map(
@@ -387,6 +397,11 @@ class KualionDataRepository
         );
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
 
         // Map to target database fields
         $targetDataArray = array_map(
@@ -462,6 +477,11 @@ class KualionDataRepository
         );
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
 
         // Map to target database fields
         $targetDataArray = array_map(
@@ -540,6 +560,11 @@ class KualionDataRepository
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
         // Map to target database fields
         $targetDataArray = array_map(
             function ($item) {
@@ -588,6 +613,11 @@ class KualionDataRepository
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
         // Map to target database fields
         $targetDataArray = array_map(
             function ($item) {
@@ -635,6 +665,11 @@ class KualionDataRepository
         );
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
 
         // Map to target database fields
         $targetDataArray = array_map(
@@ -707,6 +742,11 @@ class KualionDataRepository
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
         // Map to target database fields
         $targetDataArray = array_map(
             function ($item) {
@@ -767,6 +807,11 @@ class KualionDataRepository
         );
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
 
         // Map to target database fields
         $targetDataArray = array_map(
@@ -846,6 +891,11 @@ class KualionDataRepository
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
         // Map to target database fields
         $targetDataArray = array_map(
             function ($item) {
@@ -897,6 +947,11 @@ class KualionDataRepository
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
         // Map to target database fields
         $targetDataArray = array_map(
             function ($item) {
@@ -942,6 +997,11 @@ class KualionDataRepository
         );
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
 
         // Map to target database fields
         $targetDataArray = array_map(
@@ -1001,6 +1061,11 @@ class KualionDataRepository
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
         // Map to target database fields
         $targetDataArray = array_map(
             function ($item) {
@@ -1058,6 +1123,11 @@ class KualionDataRepository
         );
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
 
         // Map to target database fields
         $targetDataArray = array_map(
@@ -1117,6 +1187,11 @@ class KualionDataRepository
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
         // Map to target database fields
         $targetDataArray = array_map(
             function ($item) {
@@ -1165,6 +1240,11 @@ class KualionDataRepository
         );
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
 
         // Map to target database fields
         $targetDataArray = array_map(
@@ -1216,6 +1296,11 @@ class KualionDataRepository
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
         // Map to target database fields
         $targetDataArray = array_map(
             function ($item) {
@@ -1264,6 +1349,11 @@ class KualionDataRepository
         );
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
 
         // Map to target database fields
         $targetDataArray = array_map(
@@ -1339,6 +1429,11 @@ class KualionDataRepository
         );
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
 
         // Map to target database fields
         $targetDataArray = array_map(
@@ -1481,6 +1576,11 @@ class KualionDataRepository
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
         // Map to target database fields
         $targetDataArray = array_map(
             function ($item) {
@@ -1548,6 +1648,11 @@ class KualionDataRepository
         );
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
 
         // Map to target database fields
         $targetDataArray = array_map(
@@ -1622,6 +1727,11 @@ class KualionDataRepository
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
         // Map to target database fields
         $targetDataArray = array_map(
             function ($item) {
@@ -1680,6 +1790,11 @@ class KualionDataRepository
         );
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
 
         // Map to target database fields
         $targetDataArray = array_map(
@@ -1768,6 +1883,11 @@ class KualionDataRepository
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
         // Map to target database fields
         $targetDataArray = array_map(
             function ($item) {
@@ -1824,6 +1944,11 @@ class KualionDataRepository
         );
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
 
         // Map to target database fields
         $targetDataArray = array_map(
