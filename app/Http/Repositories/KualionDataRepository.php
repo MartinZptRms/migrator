@@ -1511,10 +1511,15 @@ class KualionDataRepository
                         'HORA',
                         'FECHAOPER',
                         'FOLIO',
+                        'ANEXOELEMENTO',
+                        'ZONARESERVA',
+                        'CLAVEELEMENTOTBF',
+                        'DIVISIONDISTRIBUCION',
+                        'CLAVENODOORIGEN',
+                        'CLAVENODORETIRO',
+                        'NODO',
                     ],
                     [
-                        'ANEXOELEMENTO',
-                        'NODO',
                         'MONTOHORARIO',
                         'PRECIO',
                         'POTENCIAMDA',
@@ -1536,18 +1541,13 @@ class KualionDataRepository
                         'CAPPROGRR10MTR',
                         'CAPPROGRREGMDA',
                         'CAPPROGRREGMTR',
-                        'ZONARESERVA',
                         'MONTO',
                         'POTENCIA',
                         'FACTOR',
-                        'CLAVEELEMENTOTBF',
-                        'DIVISIONDISTRIBUCION',
                         'TIPOTARIFA',
                         'PRECIOTARIFA',
                         'CANTIDAD',
                         'ELEMENTO',
-                        'CLAVENODOORIGEN',
-                        'CLAVENODORETIRO',
                         'PMLCONGESTIONORIGEN',
                         'PMLCONGESTIONRETIRO',
                         'FACTORPONDRETIRO',
@@ -1555,7 +1555,6 @@ class KualionDataRepository
                         'ENERGIA',
                         'ENERGIAFISICA',
                         'PRECIOSOBRECOBRO',
-                        'FUECD',
                     ]
                 );
             }
@@ -1698,6 +1697,8 @@ class KualionDataRepository
                         'ENTIDADINEGI',
                         'MUNICIPIO',
                         'REGIONTRANSMISION',
+                    ],
+                    [
                         'GERENCIADIVDIST',
                         'NIVELTENSION',
                         'TIPOCARGADM',
@@ -1705,7 +1706,7 @@ class KualionDataRepository
                         'TIPOGENERACIONDM',
                         'TIPOGENERACIONIM',
                         'GERENCIAREGTRANS',
-                        'ZONADISTRIBUCION',
+                        'ZONADISTRIBUCION'
                     ]
                 );
             }
