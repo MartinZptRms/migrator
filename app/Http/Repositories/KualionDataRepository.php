@@ -863,6 +863,7 @@ class KualionDataRepository
 
     public function ofertaDeCompraPorTipoTable()
     {
+        $fechaOperacion = Carbon::parse($this->startDate)->subDays(7)->toDateString();
         // Query origin data
         $query = sprintf(
             "SELECT %s FROM ( %s ) as Results GROUP BY sistema, fecha ORDER BY sistema, fecha",
@@ -872,17 +873,17 @@ class KualionDataRepository
                 sprintf(
                     "SELECT %s FROM enegence_dev.ofertaCompra WHERE fecha >= '%s' GROUP BY sistema, fecha",
                     "sistema, fecha, SUM(demandaFija) AS ofertaCompra, 0 AS consumoGI, 0 AS ofertaImportacion",
-                    $this->startDate,
+                    $fechaOperacion,
                 ),
                 sprintf(
                     "SELECT %s FROM enegence_dev.ofertasDelGIProgramaDeConsumo WHERE fechaOperacion >= '%s' GROUP BY sistema, fechaOperacion",
                     "sistema, fechaOperacion as fecha, 0 AS ofertaCompra, SUM(potenciaMedia) AS consumoGI, 0 AS ofertaImportacion",
-                    $this->startDate,
+                    $fechaOperacion,
                 ),
                 sprintf(
                     "SELECT %s FROM enegence_dev.ofertasDeImportacion WHERE fechaOperacion >= '%s' GROUP BY sistema, fechaOperacion",
                     "sistema, fechaOperacion as fecha, 0 AS ofertaCompra, 0 As consumoGI, SUM(ImportacionFija + BloquePotencia01 + BloquePotencia02 + BloquePotencia03) AS ofertaImportacion",
-                    $this->startDate,
+                    $fechaOperacion,
                 )
             )
         );
@@ -1337,13 +1338,14 @@ class KualionDataRepository
 
     public function liquidacionesDiariasECDTable()
     {
+        $fechaOperacion = Carbon::parse($this->startDate)->subDays(7)->toDateString();
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
                 "SELECT %s FROM %s where fecha_oper >= '%s' AND teamId= %s",
                 "cuenta_de_orden, fecha_oper, fecha_fuf, fuecd, fuf, folio, liquidacion, ful, mes, semana, monto_total, iva, total_neto, monto_total_dif, iva_dif, total_neto_dif",
                 "enegence_dev.ecd_montos_diarios",
-                $this->startDate,
+                $fechaOperacion,
                 $this->teamId,
             )
         );
@@ -1415,6 +1417,7 @@ class KualionDataRepository
 
     public function liquidacionesHorariasECDTable()
     {
+        $fechaOperacion = Carbon::parse($this->startDate)->subDays(7)->toDateString();
         // Query origin data
         $sourceData =  $this->sourceConnection->select(
             sprintf(
@@ -1423,7 +1426,7 @@ class KualionDataRepository
                 " potencia_erc_mda, potencia_erc_mtr,  cap_prog_rsup_mda, cap_prog_rsup_mtr, cap_prog_rnr10_mda, cap_prog_rnr10_mtr, cap_prog_rr10_mda, cap_prog_rr10_mtr, cap_prog_rreg_mda, cap_prog_rreg_mtr,  zona_reserva, monto, potencia, factor, ",
                 " clv_elemento_tbf, division_distribucion, tipo_tarifa, precio_tarifa,  cantidad, elemento, clv_nodo_origen, clv_nodo_retiro, pml_cng_origen, pml_cng_retiro,  factor_pond_retiro, factor_pond_origen, energia, energia_fisica, precio_sobrecobro, fuecd ",
                 "enegence_dev.ecd_registros_horarios",
-                $this->startDate,
+                $fechaOperacion,
                 $this->teamId,
             )
         );
