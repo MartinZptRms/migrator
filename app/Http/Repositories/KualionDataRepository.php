@@ -1688,6 +1688,8 @@ class KualionDataRepository
                         'HORA',
                         'FECHAOPER',
                         'FOLIO',
+                    ],
+                    [
                         'ANEXOELEMENTO',
                         'ZONARESERVA',
                         'CLAVEELEMENTOTBF',
@@ -1695,8 +1697,6 @@ class KualionDataRepository
                         'CLAVENODOORIGEN',
                         'CLAVENODORETIRO',
                         'NODO',
-                    ],
-                    [
                         'MONTOHORARIO',
                         'PRECIO',
                         'POTENCIAMDA',
