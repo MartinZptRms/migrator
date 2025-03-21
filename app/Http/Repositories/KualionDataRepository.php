@@ -1688,9 +1688,9 @@ class KualionDataRepository
                         'HORA',
                         'FECHAOPER',
                         'FOLIO',
+                        'ANEXOELEMENTO',
                     ],
                     [
-                        'ANEXOELEMENTO',
                         'ZONARESERVA',
                         'CLAVEELEMENTOTBF',
                         'DIVISIONDISTRIBUCION',
