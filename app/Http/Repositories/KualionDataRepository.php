@@ -190,18 +190,22 @@ class KualionDataRepository
     public function contrapartesTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where teamId = %s and created_at >= '%s'",
-                "id, alias, name, rfc, email, municipio, contractNumber, contractNumberId",
-                "enegence_cloud.invoiceRecipients",
-                $this->teamId,
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where teamId = %s and created_at >= '%s'",
+            "id, alias, name, rfc, email, municipio, contractNumber, contractNumberId",
+            "enegence_cloud.invoiceRecipients",
+            $this->teamId,
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
             return;
@@ -249,21 +253,31 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
+        
     }
 
     public function diccionarioDeFoliosTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s",
-                "folio, concepto, mercado, clasificacion, descripcion",
-                "enegence_dev.ecd_conceptos",
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s",
+            "folio, concepto, mercado, clasificacion, descripcion",
+            "enegence_dev.ecd_conceptos",
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
 
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
             return;
@@ -303,22 +317,31 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function listadoDeContratosTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where teamId = %s and updated_at >= '%s'",
-                "id, contractNumber, contractNumberId, name, clients, centrosDeCarga, centralesElectricas, created_at, updated_at, contract_template, vigenciaStartDate, vigenciaEndDate, currency, demandaContratada, energiaContratada, frecuenciaDeCalculo",
-                "enegence_cloud.contracts",
-                $this->teamId,
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where teamId = %s and updated_at >= '%s'",
+            "id, contractNumber, contractNumberId, name, clients, centrosDeCarga, centralesElectricas, created_at, updated_at, contract_template, vigenciaStartDate, vigenciaEndDate, currency, demandaContratada, energiaContratada, frecuenciaDeCalculo",
+            "enegence_cloud.contracts",
+            $this->teamId,
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -381,22 +404,31 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function plantasDeGeneracionTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where teamId = %s and updated_at >= '%s'",
-                "id, name, nivelTension, nivelTensionGroup, clvCentral, nodoP, zonaCarga, unidad, anexoElementoDelECDDeUnidad, anexoElementoDelECD, cuentaDeOrdenDelECD, contractNumberId, fechaInicioDeOperacion, sistema, tipoDeTecnologia, rmu, created_at",
-                "enegence_dev.centralElectrica",
-                $this->teamId,
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where teamId = %s and updated_at >= '%s'",
+            "id, name, nivelTension, nivelTensionGroup, clvCentral, nodoP, zonaCarga, unidad, anexoElementoDelECDDeUnidad, anexoElementoDelECD, cuentaDeOrdenDelECD, contractNumberId, fechaInicioDeOperacion, sistema, tipoDeTecnologia, rmu, created_at",
+            "enegence_dev.centralElectrica",
+            $this->teamId,
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -461,22 +493,31 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function centrosDeCargaTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where teamId = %s and updated_at >= '%s'",
-                "id, anexoElementoDelECD, cuentaDeOrdenDelECD, rpu, rmu, grupoTarifario, nivelTension, nivelTensionGroup, nodoP, zonaCarga, sistema, divisionDistribucion, factorCarga, created_at, updated_at, contractNumberId, ceAsociada, address_cc",
-                "enegence_dev.centrosCarga",
-                $this->teamId,
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where teamId = %s and updated_at >= '%s'",
+            "id, anexoElementoDelECD, cuentaDeOrdenDelECD, rpu, rmu, grupoTarifario, nivelTension, nivelTensionGroup, nodoP, zonaCarga, sistema, divisionDistribucion, factorCarga, created_at, updated_at, contractNumberId, ceAsociada, address_cc",
+            "enegence_dev.centrosCarga",
+            $this->teamId,
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -544,21 +585,30 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function tipoCambioFixTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where UpdateDate >= '%s'",
-                "Serie_Name, Period, Value, Units",
-                "enegence_dev.tipocambio_fix",
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where UpdateDate >= '%s'",
+            "Serie_Name, Period, Value, Units",
+            "enegence_dev.tipocambio_fix",
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -597,21 +647,30 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function energiaAsignadaZonadeCargaTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where updated_at >= '%s'",
-                "Zona_Carga, Fecha, Hora, Total_Cargas",
-                "enegence_dev.energiaasignadazonascarga_historico",
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where updated_at >= '%s'",
+            "Zona_Carga, Fecha, Hora, Total_Cargas",
+            "enegence_dev.energiaasignadazonascarga_historico",
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -650,21 +709,30 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function energiaGeneradaporTipodeTeconologiaTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where Dia >= '%s'",
-                "Sistema, Dia, Hora, Eolica, Fotovoltaica, Biomasa, Carboelectrica, CicloCombinado, CombustionInterna, Geotermoelectrica, Hidroelectrica, Nucleoelectrica, TermicaConvencional, TurboGas, TotalOfEnergies",
-                "enegence_dev.energiaGeneradaTipoTecnologia",
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where Dia >= '%s'",
+            "Sistema, Dia, Hora, Eolica, Fotovoltaica, Biomasa, Carboelectrica, CicloCombinado, CombustionInterna, Geotermoelectrica, Hidroelectrica, Nucleoelectrica, TermicaConvencional, TurboGas, TotalOfEnergies",
+            "enegence_dev.energiaGeneradaTipoTecnologia",
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -725,22 +793,31 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function medicionesHorariasCCTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where date >= '%s' and teamId = %s",
-                "rpu, date, hour, energy, KVARh, ogEnergy, tipo, ogTipo, block, createdAt",
-                "enegence_dev.measurements",
-                $this->startDate,
-                $this->teamId,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where date >= '%s' and teamId = %s",
+            "rpu, date, hour, energy, KVARh, ogEnergy, tipo, ogTipo, block, createdAt",
+            "enegence_dev.measurements",
+            $this->startDate,
+            $this->teamId,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -791,22 +868,31 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function medicionesHorariasCETable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where fecha >= '%s' and teamId = %s",
-                "nombre, unidad, claveNodo, fecha, hora, energiakWh, blockCE, ogEnergy, tipo, ogTipo, createdAt",
-                "enegence_dev.medicionesCentralElectrica",
-                $this->startDate,
-                $this->teamId,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where fecha >= '%s' and teamId = %s",
+            "nombre, unidad, claveNodo, fecha, hora, energiakWh, blockCE, ogEnergy, tipo, ogTipo, createdAt",
+            "enegence_dev.medicionesCentralElectrica",
+            $this->startDate,
+            $this->teamId,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -859,6 +945,11 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function ofertaDeCompraPorTipoTable()
@@ -890,6 +981,11 @@ class KualionDataRepository
         $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -930,22 +1026,31 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function preciosGasHBTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where date >= '%s' and team_id = %s",
-                "indexed_gas_prices.index, date, price",
-                "enegence_dev.indexed_gas_prices",
-                $this->startDate,
-                $this->teamId,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where date >= '%s' and team_id = %s",
+            "indexed_gas_prices.index, date, price",
+            "enegence_dev.indexed_gas_prices",
+            $this->startDate,
+            $this->teamId,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -982,21 +1087,30 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function preciosPMLMTRTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where Fecha >= '%s'",
-                "Proceso, Sistema, Clv_Nodo, Fecha, Hora, PML, PML_ENE, PML_PER, PML_CNG",
-                "enegence_dev.pmlMtr",
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where Fecha >= '%s'",
+            "Proceso, Sistema, Clv_Nodo, Fecha, Hora, PML, PML_ENE, PML_PER, PML_CNG",
+            "enegence_dev.pmlMtr",
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -1045,21 +1159,30 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function preciosPNDMDATable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where Fecha >= '%s'",
-                "Proceso, Sistema, ZonaCarga, Fecha, Hora, Precio_Zonal, Componente_Energia, Componente_Perdida, Componente_Congestion",
-                "enegence_dev.precioEnergiaNodoDistribuidoMda",
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where Fecha >= '%s'",
+            "Proceso, Sistema, ZonaCarga, Fecha, Hora, Precio_Zonal, Componente_Energia, Componente_Perdida, Componente_Congestion",
+            "enegence_dev.precioEnergiaNodoDistribuidoMda",
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -1108,21 +1231,30 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function preciosPNDMTRTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where Fecha >= '%s'",
-                "Proceso, Sistema, ZonaCarga, Fecha, Hora, Precio_Zonal, Componente_Energia, Componente_Perdida, Componente_Congestion",
-                "enegence_dev.precioEnergiaNodoDistribuidoMtr",
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where Fecha >= '%s'",
+            "Proceso, Sistema, ZonaCarga, Fecha, Hora, Precio_Zonal, Componente_Energia, Componente_Perdida, Componente_Congestion",
+            "enegence_dev.precioEnergiaNodoDistribuidoMtr",
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -1171,21 +1303,30 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function preciosSPOTERCOTTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where Fecha >= '%s'",
-                "Fecha, Hora, Enlace, PrecioEnlace",
-                "enegence_dev.ercot",
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where Fecha >= '%s'",
+            "Fecha, Hora, Enlace, PrecioEnlace",
+            "enegence_dev.ercot",
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -1224,22 +1365,31 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function proyeccionesDeEnergiaTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where date >= '%s' AND teamId = %s",
-                "rpu, date, hour, energy, createdAt",
-                "enegence_dev.proyecciones",
-                $this->startDate,
-                $this->teamId,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where date >= '%s' AND teamId = %s",
+            "rpu, date, hour, energy, createdAt",
+            "enegence_dev.proyecciones",
+            $this->startDate,
+            $this->teamId,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -1280,21 +1430,30 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function tipoDeCambioLiquidacionTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where Period >= '%s'",
-                "Serie_Name, Period, Value, Units",
-                "enegence_dev.tipoDeCambioLiquidacion",
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where Period >= '%s'",
+            "Serie_Name, Period, Value, Units",
+            "enegence_dev.tipoDeCambioLiquidacion",
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -1333,22 +1492,31 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function liquidacionesDiariasECDTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where createdAt >= '%s' AND teamId= %s",
-                "cuenta_de_orden, fecha_oper, fecha_fuf, fuecd, fuf, folio, liquidacion, ful, mes, semana, monto_total, iva, total_neto, monto_total_dif, iva_dif, total_neto_dif",
-                "enegence_dev.ecd_montos_diarios",
-                $this->startDate,
-                $this->teamId,
-            )
+        $query= sprintf(
+            "SELECT %s FROM %s where createdAt >= '%s' AND teamId= %s",
+            "cuenta_de_orden, fecha_oper, fecha_fuf, fuecd, fuf, folio, liquidacion, ful, mes, semana, monto_total, iva, total_neto, monto_total_dif, iva_dif, total_neto_dif",
+            "enegence_dev.ecd_montos_diarios",
+            $this->startDate,
+            $this->teamId,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -1395,10 +1563,10 @@ class KualionDataRepository
                         'FUL',
                         'LIQUIDACION',
                         'FECHAOPER',
-                    ],
-                    [
                         'FECHAFUF',
                         'FOLIO',
+                    ],
+                    [
                         'MES',
                         'SEMANA',
                         'MONTOTOTAL',
@@ -1411,24 +1579,33 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function liquidacionesHorariasECDTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s %s %s FROM %s where createdAt >= '%s' AND teamId= %s",
-                " cuenta_de_orden, fuf, folio, liquidacion, ful, anexo_elemento, nodo, fecha_oper, hora, monto_horario, precio,  potencia_mda, potencia_mtr, monto_diario, precio_gsi, fdp,  precio_rsup, precio_rnr10, precio_rr10, precio_rreg, ",
-                " potencia_erc_mda, potencia_erc_mtr,  cap_prog_rsup_mda, cap_prog_rsup_mtr, cap_prog_rnr10_mda, cap_prog_rnr10_mtr, cap_prog_rr10_mda, cap_prog_rr10_mtr, cap_prog_rreg_mda, cap_prog_rreg_mtr,  zona_reserva, monto, potencia, factor, ",
-                " clv_elemento_tbf, division_distribucion, tipo_tarifa, precio_tarifa,  cantidad, elemento, clv_nodo_origen, clv_nodo_retiro, pml_cng_origen, pml_cng_retiro,  factor_pond_retiro, factor_pond_origen, energia, energia_fisica, precio_sobrecobro, fuecd ",
-                "enegence_dev.ecd_registros_horarios",
-                $this->startDate,
-                $this->teamId,
-            )
+        $query = sprintf(
+            "SELECT %s %s %s FROM %s where createdAt >= '%s' AND teamId= %s",
+            " cuenta_de_orden, fuf, folio, liquidacion, ful, anexo_elemento, nodo, fecha_oper, hora, monto_horario, precio,  potencia_mda, potencia_mtr, monto_diario, precio_gsi, fdp,  precio_rsup, precio_rnr10, precio_rr10, precio_rreg, ",
+            " potencia_erc_mda, potencia_erc_mtr,  cap_prog_rsup_mda, cap_prog_rsup_mtr, cap_prog_rnr10_mda, cap_prog_rnr10_mtr, cap_prog_rr10_mda, cap_prog_rr10_mtr, cap_prog_rreg_mda, cap_prog_rreg_mtr,  zona_reserva, monto, potencia, factor, ",
+            " clv_elemento_tbf, division_distribucion, tipo_tarifa, precio_tarifa,  cantidad, elemento, clv_nodo_origen, clv_nodo_retiro, pml_cng_origen, pml_cng_retiro,  factor_pond_retiro, factor_pond_origen, energia, energia_fisica, precio_sobrecobro, fuecd ",
+            "enegence_dev.ecd_registros_horarios",
+            $this->startDate,
+            $this->teamId,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -1559,21 +1736,30 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function preciosPMLMDATable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where Fecha >= '%s'",
-                "Proceso, Sistema, Clv_Nodo, Fecha, Hora, PML, PML_ENE, PML_PER, PML_CNG",
-                "enegence_dev.pmlMda",
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where Fecha >= '%s'",
+            "Proceso, Sistema, Clv_Nodo, Fecha, Hora, PML, PML_ENE, PML_PER, PML_CNG",
+            "enegence_dev.pmlMda",
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -1622,6 +1808,11 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     // TODO
@@ -1637,16 +1828,20 @@ class KualionDataRepository
     public function nodosPTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where updatedAt >= '%s'",
-                "Sistema, CentroControlRegional, ZonaCarga, Clave, NombreNodo, NivelTension, TipoCargaDM, TipoCargaIM, TipoGeneracionDM, TipoGeneracionIM, ZonaOpeTrans, GerenciaRegTrans, ZonaDistribucion, GerenciaDivDist, EntidadInegi, Municipio, RegionTransmision",
-                "enegence_dev.nodosPAccumulative",
-                $this->startDate,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where updatedAt >= '%s'",
+            "Sistema, CentroControlRegional, ZonaCarga, Clave, NombreNodo, NivelTension, TipoCargaDM, TipoCargaIM, TipoGeneracionDM, TipoGeneracionIM, ZonaOpeTrans, GerenciaRegTrans, ZonaDistribucion, GerenciaDivDist, EntidadInegi, Municipio, RegionTransmision",
+            "enegence_dev.nodosPAccumulative",
+            $this->startDate,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -1711,22 +1906,31 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function ofertasCompraEnergiaTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where fecha >= '%s' AND teamId = %s",
-                "proceso, usuarioCalificado, anexoElementoDelECD, nodo, participante, fecha, hora, demandaFijaMw, estatusEnvio",
-                "enegence_dev.ofertasGeneradasCompra",
-                $this->startDate,
-                $this->teamId,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where fecha >= '%s' AND teamId = %s",
+            "proceso, usuarioCalificado, anexoElementoDelECD, nodo, participante, fecha, hora, demandaFijaMw, estatusEnvio",
+            "enegence_dev.ofertasGeneradasCompra",
+            $this->startDate,
+            $this->teamId,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -1775,22 +1979,31 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function ofertasVentaEnergiaTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where fecha >= '%s' AND teamId = %s",
-                "tipoOferta, clvCentral, clvUnidad, proceso, estatusAsignacion, clvParticipante, fecha, fechaFinal, hora, vigencia, estatusEnvio",
-                "enegence_dev.ofertasGeneradasVenta",
-                $this->startDate,
-                $this->teamId,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where fecha >= '%s' AND teamId = %s",
+            "tipoOferta, clvCentral, clvUnidad, proceso, estatusAsignacion, clvParticipante, fecha, fechaFinal, hora, vigencia, estatusEnvio",
+            "enegence_dev.ofertasGeneradasVenta",
+            $this->startDate,
+            $this->teamId,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -1843,6 +2056,11 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function ofertasVentaPorTipoTable()
@@ -1883,6 +2101,11 @@ class KualionDataRepository
         $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -1929,22 +2152,31 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function calculoDeContratosTable()
     {
         // Query origin data
-        $sourceData =  $this->sourceConnection->select(
-            sprintf(
-                "SELECT %s FROM %s where startDateParam >= '%s' AND teamId = %s",
-                "contractCalculationNumber, startDateParam, endDateParam, centrosDeCargaParam, energyAmount, capacityAmount, cleanEnergyCertificateAmount, regulatedTariffAmount, associatedProductsAmount, marketCostAmount, othersAmount, subtotal, iva, total",
-                "enegence_dev.calculationsResults",
-                $this->startDate,
-                $this->teamId,
-            )
+        $query = sprintf(
+            "SELECT %s FROM %s where startDateParam >= '%s' AND teamId = %s",
+            "contractCalculationNumber, startDateParam, endDateParam, centrosDeCargaParam, energyAmount, capacityAmount, cleanEnergyCertificateAmount, regulatedTariffAmount, associatedProductsAmount, marketCostAmount, othersAmount, subtotal, iva, total",
+            "enegence_dev.calculationsResults",
+            $this->startDate,
+            $this->teamId,
         );
+        $sourceData =  $this->sourceConnection->select($query);
         // Parse to Array
         $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
 
         // Exit function if there is no data to migrate
         if (count($sourceDataArray) == 0) {
@@ -2003,5 +2235,10 @@ class KualionDataRepository
                 );
             }
         });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 }
