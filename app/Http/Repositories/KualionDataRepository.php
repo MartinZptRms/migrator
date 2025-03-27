@@ -150,6 +150,12 @@ class KualionDataRepository
             3,
             storage_path('logs/tables.log')
         );
+        $this->facturacionCENACETable();
+        error_log(
+            date("[Y-m-d H:i:s]") . " facturacionCENACETable done" . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
         $this->nodosPTable();
         error_log(
             date("[Y-m-d H:i:s]") . " nodosPTable done" . PHP_EOL,
@@ -1818,6 +1824,135 @@ class KualionDataRepository
     // TODO
     public function facturacionCENACETable()
     {
+        // Disable non grouped fiels error
+        $this->sourceConnection->select("SET sql_mode = ''");
+
+        // Query origin data
+        $query = sprintf(
+            "SELECT %s FROM %s %s where %s GROUP BY enegence_dev.ecd_montos_diarios.fuf",
+            // SELECT fields
+            sprintf(
+                " %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s ",
+                "enegence_dev.ecd_montos_diarios.cuenta_de_orden",
+                "enegence_dev.ecd_montos_diarios.fecha_oper",
+                "enegence_dev.ecd_montos_diarios.fecha_fuf",
+                "enegence_dev.ecd_montos_diarios.fuecd",
+                "enegence_dev.ecd_montos_diarios.fuf",
+                "enegence_dev.ecd_montos_diarios.liquidacion",
+                "enegence_dev.ecd_montos_diarios.mes",
+                "enegence_dev.ecd_montos_diarios.semana",
+                "CASE
+                    WHEN enegence_dev.ecd_montos_diarios.liquidacion > 0 THEN SUM(enegence_dev.ecd_montos_diarios.monto_total_dif)
+                    ELSE SUM(enegence_dev.ecd_montos_diarios.monto_total)
+                END AS monto",
+                "CASE 
+                    WHEN enegence_dev.ecd_montos_diarios.liquidacion > 0 THEN SUM(enegence_dev.ecd_montos_diarios.iva_Dif)
+                    ELSE SUM(enegence_dev.ecd_montos_diarios.iva)
+                END AS iva",
+                "CASE 
+                    WHEN enegence_dev.ecd_montos_diarios.liquidacion > 0 THEN SUM(enegence_dev.ecd_montos_diarios.total_neto_dif)
+                    ELSE SUM(enegence_dev.ecd_montos_diarios.total_neto)
+                END total",
+                "enegence_dev.ecd_montos_diarios.uuid",
+                "enegence_dev.ecd_montos_diarios.fechaTimbrado",
+                "enegence_dev.ecd_montos_diarios.emisor",
+                "enegence_dev.ecd_montos_diarios.tipoDocumento",
+                "enegence_dev.ecd_montos_diarios.tipoComprobante",
+                "enegence_cloud.invoices.cfdi"
+            ),
+            "enegence_dev.ecd_montos_diarios",
+            "INNER JOIN enegence_cloud.invoices ON enegence_dev.ecd_montos_diarios.uuid =  enegence_cloud.invoices.uuid",
+            // Where sentenses
+            sprintf(
+                "teamId = %s AND enegence_dev.ecd_montos_diarios.fecha_fuf = '%s' AND enegence_dev.ecd_montos_diarios.fuf LIKE '_______________P__'",
+                $this->teamId,
+                $this->startDate,
+            ),
+        );
+
+        $sourceData =  $this->sourceConnection->select($query);
+
+        // Parse to Array
+        $sourceDataArray = json_decode(json_encode($sourceData), true);
+
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
+        // Map to target database fields
+        $targetDataArray = array_map(
+            function ($item) {
+                return [
+                    'CUENTADEORDEN' => $item['cuenta_de_orden'],
+                    'FECHAOPER' => $item['fecha_oper'],
+                    'FECHAFUF' => $item['fecha_fuf'],
+                    'FUECD' => $item['fuecd'],
+                    'FUF' => $item['fuf'],
+                    'LIQUIDACION' => $item['liquidacion'],
+                    'MES' => $item['mes'],
+                    'SEMANA' => $item['semana'],
+                    'MONTOTOTAL' => $item['monto'],
+                    'IVA' => $item['iva'],
+                    'TOTALNETO' => $item['total'],
+                    'UUID' => $item['uuid'],
+                    'FECHATIMBRADO' => $item['fechaTimbrado'],
+                    'EMISOR' => $item['emisor'],
+                    'TIPODOCUMENTO' => $item['tipoDocumento'],
+                    'TIPOCOMPROBANTE' => $item['tipoComprobante'],
+                    'CFDI' => $item['cfdi']
+
+                ];
+            },
+            $sourceDataArray
+        );
+
+        // Parce to Chunks for optimization.
+        $chunks = array_chunk($targetDataArray, 1000);
+
+        // Run insert query in target connection transaction
+        DB::connection('oracle')->transaction(function () use ($chunks) {
+            foreach ($chunks as $chunk) {
+                $this->targetConnection->table('FACTURACIONMEM')->upsert(
+                    $chunk,
+                    [
+                        'CUENTADEORDEN',
+                        'FECHAOPER',
+                        'FECHAFUF',
+                        'FUECD',
+                        'FUF',
+                        'LIQUIDACION',
+                        'MES',
+                        'SEMANA',
+                    ],
+                    [
+                        'MONTOTOTAL',
+                        'IVA',
+                        'TOTALNETO',
+                        'MONTOTOTALDIF',
+                        'IVADIF',
+                        'TOTALNETODIF',
+                        'UUID',
+                        'FECHATIMBRADO',
+                        'EMISOR',
+                        'TIPODOCUMENTO',
+                        'TIPOCOMPROBANTE',
+                        'CFDI'
+                    ]
+                );
+            }
+        });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     // TODO
