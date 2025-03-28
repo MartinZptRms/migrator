@@ -1864,7 +1864,7 @@ class KualionDataRepository
             "INNER JOIN enegence_cloud.invoices ON enegence_dev.ecd_montos_diarios.uuid =  enegence_cloud.invoices.uuid",
             // Where sentenses
             sprintf(
-                "teamId = %s AND enegence_dev.ecd_montos_diarios.fecha_fuf = '%s' AND enegence_dev.ecd_montos_diarios.fuf LIKE '_______________P__'",
+                "teamId = %s AND enegence_cloud.invoices.created_at >= '%s' AND enegence_dev.ecd_montos_diarios.fuf LIKE '_______________P__'",
                 $this->teamId,
                 $this->startDate,
             ),
