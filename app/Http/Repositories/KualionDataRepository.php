@@ -398,10 +398,8 @@ class KualionDataRepository
                     $chunk,
                     [
                         'ID',
-                        'CONTRACTNUMBER',
                     ],
                     [
-                        'CONTRACTNUMBERID',
                         'NAME',
                         'CLIENTE',
                         'CENTRODECARGA',
@@ -1113,7 +1111,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where Fecha >= '%s'",
+            "SELECT %s FROM %s where updated_at >= '%s'",
             "Proceso, Sistema, Clv_Nodo, Fecha, Hora, PML, PML_ENE, PML_PER, PML_CNG",
             "enegence_dev.pmlMtr",
             $this->startDate,
@@ -1257,7 +1255,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where Fecha >= '%s'",
+            "SELECT %s FROM %s where updated_at >= '%s'",
             "Proceso, Sistema, ZonaCarga, Fecha, Hora, Precio_Zonal, Componente_Energia, Componente_Perdida, Componente_Congestion",
             "enegence_dev.precioEnergiaNodoDistribuidoMtr",
             $this->startDate,
@@ -1606,7 +1604,7 @@ class KualionDataRepository
         // Query origin data
         $query = sprintf(
             "SELECT %s %s %s FROM %s where createdAt >= '%s' AND teamId= %s",
-            " cuenta_de_orden, fuf, folio, liquidacion, ful, anexo_elemento, nodo, fecha_oper, hora, monto_horario, precio,  potencia_mda, potencia_mtr, monto_diario, precio_gsi, fdp,  precio_rsup, precio_rnr10, precio_rr10, precio_rreg, ",
+            "id, cuenta_de_orden, fuf, folio, liquidacion, ful, anexo_elemento, nodo, fecha_oper, hora, monto_horario, precio,  potencia_mda, potencia_mtr, monto_diario, precio_gsi, fdp,  precio_rsup, precio_rnr10, precio_rr10, precio_rreg, ",
             " potencia_erc_mda, potencia_erc_mtr,  cap_prog_rsup_mda, cap_prog_rsup_mtr, cap_prog_rnr10_mda, cap_prog_rnr10_mtr, cap_prog_rr10_mda, cap_prog_rr10_mtr, cap_prog_rreg_mda, cap_prog_rreg_mtr,  zona_reserva, monto, potencia, factor, ",
             " clv_elemento_tbf, division_distribucion, tipo_tarifa, precio_tarifa,  cantidad, elemento, clv_nodo_origen, clv_nodo_retiro, pml_cng_origen, pml_cng_retiro,  factor_pond_retiro, factor_pond_origen, energia, energia_fisica, precio_sobrecobro, fuecd ",
             "enegence_dev.ecd_registros_horarios",
@@ -1631,6 +1629,7 @@ class KualionDataRepository
         $targetDataArray = array_map(
             function ($item) {
                 return [
+                    'ID'  => $item['id'],
                     'CUENTADEORDEN'  => $item['cuenta_de_orden'],
                     'FUF' => $item['fuf'],
                     'FOLIO' => $item['folio'],
@@ -1695,6 +1694,9 @@ class KualionDataRepository
                 $this->targetConnection->table('LIQUIDACIONESHORARIASECD')->upsert(
                     $chunk,
                     [
+                        'ID'
+                    ],
+                    [
                         'CUENTADEORDEN',
                         'FUF',
                         'FUECD',
@@ -1704,8 +1706,6 @@ class KualionDataRepository
                         'FECHAOPER',
                         'FOLIO',
                         'ANEXOELEMENTO',
-                    ],
-                    [
                         'ZONARESERVA',
                         'CLAVEELEMENTOTBF',
                         'DIVISIONDISTRIBUCION',
