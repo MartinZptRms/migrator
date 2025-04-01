@@ -817,7 +817,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where date >= '%s' and teamId = %s",
+            "SELECT %s FROM %s where createdAt >= '%s' and teamId = %s",
             "rpu, date, hour, energy, KVARh, ogEnergy, tipo, ogTipo, block, createdAt",
             "enegence_dev.measurements",
             $this->startDate,
@@ -892,7 +892,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where fecha >= '%s' and teamId = %s",
+            "SELECT %s FROM %s where createdAt >= '%s' and teamId = %s",
             "nombre, unidad, claveNodo, fecha, hora, energiakWh, blockCE, ogEnergy, tipo, ogTipo, createdAt",
             "enegence_dev.medicionesCentralElectrica",
             $this->startDate,
