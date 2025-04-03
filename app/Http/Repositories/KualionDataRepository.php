@@ -286,7 +286,9 @@ class KualionDataRepository
                         'CONTRACT_TEMPLATE',
                         'ENERGIACONTRATADA',
                         'CENTRALESELECTRICAS',
-                        'FRECUENCIADECALCULO'
+                        'FRECUENCIADECALCULO',
+                        'CONTRACTNUMBER',
+                        'CONTRACTNUMBERID',
                     ]
                 );
             }
