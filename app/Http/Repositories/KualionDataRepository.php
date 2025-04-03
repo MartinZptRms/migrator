@@ -207,7 +207,7 @@ class KualionDataRepository
         // Query origin data
         $query = sprintf(
             "SELECT %s FROM %s where teamId = %s and created_at >= '%s'",
-            "id, alias, name, rfc, email, municipio, contractNumber, contractNumberId",
+            "id, alias, name, rfc, email, municipio",
             "enegence_cloud.invoiceRecipients",
             $this->teamId,
             $this->startDate,
@@ -236,8 +236,6 @@ class KualionDataRepository
                     'RFC'            => $item['rfc'],
                     'EMAIL'          => $item['email'],
                     'MUNICIPIO'      => $item['municipio'],
-                    'CONTRACTNUMBER' => $item['contractNumber'],
-                    'CONTRACTNUMBERID' => $item['contractNumberId'],
                 ];
             },
             $sourceDataArray
@@ -261,9 +259,7 @@ class KualionDataRepository
                         'NAME',
                         'RFC',
                         'EMAIL',
-                        'MUNICIPIO',
-                        'CONTRACTNUMBER',
-                        'CONTRACTNUMBERID'
+                        'MUNICIPIO'
                     ]
                 );
             }
