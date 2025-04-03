@@ -609,7 +609,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where Dia >= '%s'",
+            "SELECT %s FROM %s where dateTime >= '%s'",
             "Sistema, Dia, Hora, Eolica, Fotovoltaica, Biomasa, Carboelectrica, CicloCombinado, CombustionInterna, Geotermoelectrica, Hidroelectrica, Nucleoelectrica, TermicaConvencional, TurboGas, TotalOfEnergies",
             "enegence_dev.energiaGeneradaTipoTecnologia",
             $this->startDate,
@@ -926,7 +926,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where date >= '%s' and team_id = %s",
+            "SELECT %s FROM %s where created_at >= '%s' and team_id = %s",
             "indexed_gas_prices.index, date, price",
             "enegence_dev.indexed_gas_prices",
             $this->startDate,
@@ -1059,7 +1059,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where Fecha >= '%s'",
+            "SELECT %s FROM %s where updated_at >= '%s'",
             "Proceso, Sistema, ZonaCarga, Fecha, Hora, Precio_Zonal, Componente_Energia, Componente_Perdida, Componente_Congestion",
             "enegence_dev.precioEnergiaNodoDistribuidoMda",
             $this->startDate,
@@ -1203,7 +1203,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where Fecha >= '%s'",
+            "SELECT %s FROM %s where updated_at >= '%s'",
             "Fecha, Hora, Enlace, PrecioEnlace",
             "enegence_dev.ercot",
             $this->startDate,
@@ -1265,7 +1265,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where date >= '%s' AND teamId = %s",
+            "SELECT %s FROM %s where createdAt >= '%s' AND teamId = %s",
             "rpu, date, hour, energy, createdAt",
             "enegence_dev.proyecciones",
             $this->startDate,
@@ -1330,7 +1330,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where Period >= '%s'",
+            "SELECT %s FROM %s where UpdatedDate >= '%s'",
             "Serie_Name, Period, Value, Units",
             "enegence_dev.tipoDeCambioLiquidacion",
             $this->startDate,
