@@ -23,183 +23,61 @@ class KualionDataRepository
             $this->startDate = $startDate;
         }
     }
+
     public function dispatchTables()
     {
-        try {
-            $this->contrapartesTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " contrapartesTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->diccionarioDeFoliosTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " diccionarioDeFoliosTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->listadoDeContratosTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " listadoDeContratosTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->plantasDeGeneracionTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " plantasDeGeneracionTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->centrosDeCargaTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " centrosDeCargaTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->tipoCambioFixTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " tipoCambioFixTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->energiaAsignadaZonadeCargaTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " energiaAsignadaZonadeCargaTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->energiaGeneradaporTipodeTeconologiaTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " energiaGeneradaporTipodeTeconologiaTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->medicionesHorariasCCTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " medicionesHorariasCCTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->medicionesHorariasCETable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " medicionesHorariasCETable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->ofertaDeCompraPorTipoTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " ofertaDeCompraPorTipoTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->preciosGasHBTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " preciosGasHBTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->preciosPMLMTRTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " preciosPMLMTRTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->preciosPNDMDATable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " preciosPNDMDATable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->preciosPNDMTRTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " preciosPNDMTRTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->preciosSPOTERCOTTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " preciosSPOTERCOTTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->proyeccionesDeEnergiaTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " proyeccionesDeEnergiaTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->tipoDeCambioLiquidacionTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " tipoDeCambioLiquidacionTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->liquidacionesDiariasECDTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " liquidacionesDiariasECDTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->liquidacionesHorariasECDTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " liquidacionesHorariasECDTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->preciosPMLMDATable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " preciosPMLMDATable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->facturacionCENACETable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " facturacionCENACETable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->nodosPTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " nodosPTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->ofertasCompraEnergiaTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " ofertasCompraEnergiaTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->ofertasVentaEnergiaTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " ofertasVentaEnergiaTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->ofertasVentaPorTipoTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " ofertasVentaPorTipoTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            $this->calculoDeContratosTable();
-            error_log(
-                date("[Y-m-d H:i:s]") . " calculoDeContratosTable done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-            error_log(
-                date("[Y-m-d H:i:s]") . " Tables done" . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/tables.log')
-            );
-        } catch (Exception $e) {
-            error_log(
-                date("[Y-m-d H:i:s]") . $e . PHP_EOL . PHP_EOL,
-                3,
-                storage_path('logs/table_errors.log')
-            );
+        $methods = [
+            'contrapartesTable',
+            'diccionarioDeFoliosTable',
+            'listadoDeContratosTable',
+            'plantasDeGeneracionTable',
+            'centrosDeCargaTable',
+            'tipoCambioFixTable',
+            'energiaAsignadaZonadeCargaTable',
+            'energiaGeneradaporTipodeTeconologiaTable',
+            'medicionesHorariasCCTable',
+            'medicionesHorariasCETable',
+            'ofertaDeCompraPorTipoTable',
+            'preciosGasHBTable',
+            'preciosPMLMTRTable',
+            'preciosPNDMDATable',
+            'preciosPNDMTRTable',
+            'preciosSPOTERCOTTable',
+            'proyeccionesDeEnergiaTable',
+            'tipoDeCambioLiquidacionTable',
+            'liquidacionesDiariasECDTable',
+            'liquidacionesHorariasECDTable',
+            'preciosPMLMDATable',
+            'facturacionCENACETable',
+            'nodosPTable',
+            'ofertasCompraEnergiaTable',
+            'ofertasVentaEnergiaTable',
+            'ofertasVentaPorTipoTable',
+            'calculoDeContratosTable',
+        ];
+
+        foreach ($methods as $method) {
+            try {
+                $this->$method();
+                error_log(
+                    date("[Y-m-d H:i:s]") . $method . " done" . PHP_EOL . PHP_EOL,
+                    3,
+                    storage_path('logs/tables.log')
+                );
+            } catch (Exception $e) {
+                error_log(
+                    date("[Y-m-d H:i:s]") . $e . PHP_EOL . PHP_EOL,
+                    3,
+                    storage_path('logs/table_errors.log')
+                );
+            }
         }
+
+        error_log(
+            date("[Y-m-d H:i:s]") . " Tables done" . PHP_EOL . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function contrapartesTable()
@@ -265,7 +143,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -329,7 +207,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -414,7 +292,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -503,7 +381,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -595,7 +473,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -657,7 +535,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -719,7 +597,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -803,7 +681,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -878,7 +756,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -955,7 +833,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -1036,7 +914,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -1097,7 +975,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -1169,7 +1047,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -1241,7 +1119,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -1313,7 +1191,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -1375,7 +1253,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -1440,7 +1318,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -1502,7 +1380,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -1589,7 +1467,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -1748,7 +1626,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -1820,7 +1698,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -1951,7 +1829,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -2044,7 +1922,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -2117,7 +1995,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -2194,7 +2072,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -2290,7 +2168,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
@@ -2373,7 +2251,7 @@ class KualionDataRepository
             }
         });
         error_log(
-            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL,
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
             3,
             storage_path('logs/tables.log')
         );
