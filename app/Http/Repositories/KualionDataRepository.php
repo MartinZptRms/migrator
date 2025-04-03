@@ -1762,7 +1762,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where Fecha >= '%s'",
+            "SELECT %s FROM %s where updated_at >= '%s'",
             "Proceso, Sistema, Clv_Nodo, Fecha, Hora, PML, PML_ENE, PML_PER, PML_CNG",
             "enegence_dev.pmlMda",
             $this->startDate,
@@ -2058,7 +2058,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where fecha >= '%s' AND teamId = %s",
+            "SELECT %s FROM %s where created_at >= '%s' AND teamId = %s",
             "proceso, usuarioCalificado, anexoElementoDelECD, nodo, participante, fecha, hora, demandaFijaMw, estatusEnvio",
             "enegence_dev.ofertasGeneradasCompra",
             $this->startDate,
@@ -2131,7 +2131,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where fecha >= '%s' AND teamId = %s",
+            "SELECT %s FROM %s where created_at >= '%s' AND teamId = %s",
             "tipoOferta, clvCentral, clvUnidad, proceso, estatusAsignacion, clvParticipante, fecha, fechaFinal, hora, vigencia, estatusEnvio",
             "enegence_dev.ofertasGeneradasVenta",
             $this->startDate,
@@ -2304,7 +2304,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where startDateParam >= '%s' AND teamId = %s",
+            "SELECT %s FROM %s where created_at >= '%s' AND teamId = %s",
             "contractCalculationNumber, startDateParam, endDateParam, centrosDeCargaParam, energyAmount, capacityAmount, cleanEnergyCertificateAmount, regulatedTariffAmount, associatedProductsAmount, marketCostAmount, othersAmount, subtotal, iva, total",
             "enegence_dev.calculationsResults",
             $this->startDate,
