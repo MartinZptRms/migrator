@@ -1330,7 +1330,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s where UpdatedDate >= '%s'",
+            "SELECT %s FROM %s where UpdateDate >= '%s'",
             "Serie_Name, Period, Value, Units",
             "enegence_dev.tipoDeCambioLiquidacion",
             $this->startDate,
