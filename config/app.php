@@ -123,4 +123,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'CENACE_USER' => env('CENACE_USER', null),
+    'CENACE_PASSWORD' => env('CENACE_PASSWORD', null),
+    'CENACE_PARTICIPANT' => env('CENACE_PARTICIPANT', null),
 ];
