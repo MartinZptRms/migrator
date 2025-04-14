@@ -1861,8 +1861,8 @@ class KualionDataRepository
         ];
 
         // Set custom period in order to apply SMART rules for ecdcenaceTask
-        $startDate = date('Y-m-d', strtotime('-9 days'));
-        $endDate = date('Y-m-d', strtotime('-5 days'));
+        $startDate = date('Y-m-d', strtotime('-3 days'));
+        $endDate = date('Y-m-d', strtotime('-1 days'));
         $dateDataArray = $cenaceInvoiceHelper->getFacturasEmitidas($params, $startDate, $endDate);
 
         // Prepare  insertion
