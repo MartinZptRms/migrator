@@ -1900,6 +1900,72 @@ class KualionDataRepository
         }
     }
 
+    public function ecdsCENACETable()
+    {
+        $cenaceInvoiceHelper = new CENACEInvoicesHelper();
+        $params = [
+            "tipoDeFecha" => "fuf",
+            "usuario" => config('app.CENACE_USER'),
+            "password" => config('app.CENACE_PASSWORD'),
+            "sistema" => "SIN",
+            "participante" =>config('app.CENACE_PARTICIPANT'),
+            "subcuenta" => null
+        ];
+
+        // Set custom period in order to apply SMART rules for ecdcenaceTask
+        $startDate = date('Y-m-d', strtotime('-9 days'));
+        $endDate = date('Y-m-d', strtotime('-5 days'));
+
+        $dates = [];
+
+        $currentDate = $startDate;
+        while ($currentDate <= $endDate) {
+            $dates[] = $currentDate;
+            $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+        }
+
+        foreach ($dates as $date) {
+            $ecdsByDateListResult = $cenaceInvoiceHelper->getCENACEECDs($params, $date, false);
+            if (is_string($ecdsByDateListResult)) {
+                continue;
+            }
+
+            if ('true' !== $ecdsByDateListResult['statusValue']) {
+                continue;
+            }
+
+            foreach ($ecdsByDateListResult['data'] as $dateEcds) {
+                $data = [
+                    'FILENAME' => $dateEcds['fileName'],
+                    'SUBCUENTA' => $dateEcds['subcuenta'],
+                    'FILECONTENTXML' => $dateEcds['fileContent']
+                ];
+
+                try {
+                    // Prepare base query with where conditions
+                    $query = $this->targetConnection->table('ECDSCENANCE')
+                        ->where('FILENAME', $data['FILENAME'])
+                        ->where('SUBCUENTA', $data['SUBCUENTA']);
+                    
+                    if ($query->exists()) {
+                        // Update existing record
+                        $query->update($data);
+                    } else {
+                        // Insert new record
+                        $this->targetConnection->table('ECDSCENANCE')->insert($data);
+                    }
+                } catch (Exception $e) {
+                    error_log(
+                        date("[Y-m-d H:i:s]") . $e->getMessage() . PHP_EOL,
+                        3,
+                        storage_path('logs/table_errors.log')
+                    );
+                }
+
+            }
+        }
+    }
+
     public function nodosPTable()
     {
         // Query origin data

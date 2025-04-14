@@ -16,6 +16,102 @@ class CENACEInvoicesHelper
 {
 
     /**
+     * Retrieve CENACE ECDs (Estado de Cuentas) based on provided parameters and date.
+     *
+     * @param array $params Parameters for the request.
+     * @param string $date Date for the request.
+     * @param bool $includeAllFiles Flago to exclude or include Pdf,
+     *                              Csv and Html files in response array data.
+     *
+     * @return array|null Data containing ECDs if successful, otherwise null.
+     */
+    public function getCENACEECDs($params, $date, $includeAllFiles = true)
+    {
+        $xml_request = $this->createXmlRequest($params, $date, "GetEstadoCuentas");
+        $client = new Client(['http_errors' => false]);
+        $headers = [
+            'Content-Type'    => 'text/xml; charset=utf-8',
+            "accept"          => "*/*",
+            "accept-encoding" => "gzip, deflate",
+            "SOAPAction"      => "http://tempuri.org/IEdoCuentaService/GetEstadoCuentas",
+        ];
+
+        $request = new Request(
+            'POST',
+            'https://ws01.cenace.gob.mx:8081/WSDownLoadEdoCta/EdoCuentaService.svc',
+            $headers,
+            $xml_request
+        );
+        $response = $client->send($request);
+
+        if ($response->getStatusCode() !== 200) {
+            return null;
+        }
+
+        $resposeBody = (string) $response->getBody();
+
+        $dom = new DOMDocument();
+        libxml_use_internal_errors(true); //disable libxml errors
+
+        $dom->loadXML($resposeBody);
+        $getEstadoCuentasResult = $dom->getElementsByTagName('GetEstadoCuentasResult');
+        $messageValue = '';
+        $statusValue = '';
+        $estadosDeCuentaElementArray = [];
+        $estadosDeCuentaItems = [];
+        $estadosDeCuentaConent = [];
+    
+        if (isset($getEstadoCuentasResult[0])) {
+            $getEstadoCuentasResultElement = $getEstadoCuentasResult[0];
+            $getEstadoCuentasResultItems = $getEstadoCuentasResultElement->childNodes;
+
+            foreach ($getEstadoCuentasResultItems as $item) {
+                $nodeName = $item->nodeName;
+
+                if ($nodeName === 'a:EC') {
+                    $estadosDeCuentaElementArray = $item->childNodes;
+                } elseif ($nodeName === 'a:Msg') {
+                    $messageValue = $item->nodeValue;
+                } elseif ($nodeName === 'a:Status') {
+                    $statusValue = $item->nodeValue;
+                }
+            }
+        }
+
+        foreach ($estadosDeCuentaElementArray as $item) {
+            $estadosDeCuentaItems[] = $item->childNodes;
+        }
+
+        foreach ($estadosDeCuentaItems as $item) {
+            if ($messageValue !== '') {
+                $messageValue = substr($messageValue, -10);
+            }
+
+            $content = [
+                'fileName' => $item[0]->nodeValue,
+                'fileContent' => $item[4]->nodeValue,
+                'subcuenta' => $item[7]->nodeValue,
+                'donwloadDate' => $messageValue,
+            ];
+            if ($includeAllFiles) {
+                $content['fileContentPdf'] = $item[3]->nodeValue;
+                $content['fileContentCsv'] = $item[1]->nodeValue;
+                $content['fileContentHtml'] = $item[2]->nodeValue;
+            }
+
+            $estadosDeCuentaConent[] = $content;
+        }
+
+        $dateRes = [
+            'message' => $messageValue,
+            'statusValue' => $statusValue,
+            'data' => $estadosDeCuentaConent,
+        ];
+
+        return $dateRes;
+    }
+
+    /**
     * Retrieves and processes emitted invoices from CENACE web service for a given date range.
     *
     * This function performs the following operations:
