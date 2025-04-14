@@ -1856,7 +1856,7 @@ class KualionDataRepository
             "usuario" => config('app.CENACE_USER'),
             "password" => config('app.CENACE_PASSWORD'),
             "sistema" => "SIN",
-            "participante" =>config('app.app.CENACE_PARTICIPANT'),
+            "participante" =>config('app.CENACE_PARTICIPANT'),
             "subcuenta" => null
         ];
 
@@ -1871,30 +1871,23 @@ class KualionDataRepository
             foreach ($data as $itemData) {
                 $data = [
                     'FILENAME' => $itemData['fileName'],
-                    'SUBCUENTA' => $itemData['subcuenta']
-                ];
-                $blob = [
-                    'FILECONTENTXML' => base64_decode($itemData['fileContent']),
-                    'FILECONTENTPDF' => base64_decode($itemData['fileContentPdf']),
+                    'SUBCUENTA' => $itemData['subcuenta'],
+                    'FILECONTENTXML' => $itemData['fileContent'],
+                    'FILECONTENTPDF' => $itemData['fileContentPdf']
                 ];
 
                 try {
-                    // Check if record exists
-                    $exists = $this->targetConnection->table('FACTURASCENANCE')
-                    ->where('FILENAME', $data['FILENAME'])
-                    ->where('SUBCUENTA', $data['SUBCUENTA'])
-                    ->exists();
-
-                    if ($exists) {
-                        // Update LOB columns for existing record
-                        $this->targetConnection->table('FACTURASCENANCE')
+                    // Prepare base query with where conditions
+                    $query = $this->targetConnection->table('FACTURASCENANCE')
                         ->where('FILENAME', $data['FILENAME'])
-                        ->where('SUBCUENTA', $data['SUBCUENTA'])
-                        ->updateLob($blob);
+                        ->where('SUBCUENTA', $data['SUBCUENTA']);
+                    
+                    if ($query->exists()) {
+                        // Update existing record
+                        $query->update($data);
                     } else {
-                        // Insert new record with LOBs, specify auto-increment column if needed
-                        $this->targetConnection->table('FACTURASCENANCE')
-                        ->insertLob($data, $blob);
+                        // Insert new record
+                        $this->targetConnection->table('FACTURASCENANCE')->insert($data);
                     }
                 } catch (Exception $e) {
                     error_log(
