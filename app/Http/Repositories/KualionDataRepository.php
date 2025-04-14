@@ -60,6 +60,7 @@ class KualionDataRepository
             'preciosPMLMDATable',
             'facturacionCENACETable',
             'facturacionUCTable',
+            'ecdsCENACETable',
             'nodosPTable',
             'ofertasCompraEnergiaTable',
             'ofertasVentaEnergiaTable',
