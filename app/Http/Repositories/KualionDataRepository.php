@@ -69,6 +69,7 @@ class KualionDataRepository
         ];
 
         foreach ($methods as $method) {
+            $exception = false;
             try {
                 $this->$method();
                 error_log(
@@ -77,11 +78,31 @@ class KualionDataRepository
                     storage_path('logs/tables.log')
                 );
             } catch (Exception $e) {
-                error_log(
-                    date("[Y-m-d H:i:s]") . $e . PHP_EOL . PHP_EOL,
-                    3,
-                    storage_path('logs/table_errors.log')
-                );
+                $exception = true;
+            }
+
+            // try again
+            if ($exception) {
+                try {
+                    sleep(10);// await time for another queries
+                    error_log(
+                        date("[Y-m-d H:i:s]") . "Trying again ". $method . " method..." . PHP_EOL . PHP_EOL,
+                        3,
+                        storage_path('logs/tables.log')
+                    );
+                    $this->$method();
+                    error_log(
+                        date("[Y-m-d H:i:s]") . $method . " done" . PHP_EOL . PHP_EOL,
+                        3,
+                        storage_path('logs/tables.log')
+                    );
+                } catch (Exception $e) {
+                    error_log(
+                        date("[Y-m-d H:i:s]") . $e . PHP_EOL . PHP_EOL,
+                        3,
+                        storage_path('logs/table_errors.log')
+                    );
+                }
             }
         }
 
