@@ -84,7 +84,6 @@ class KualionDataRepository
             // try again
             if ($exception) {
                 try {
-                    sleep(10);// await time for another queries
                     error_log(
                         date("[Y-m-d H:i:s]") . "Trying again ". $method . " method..." . PHP_EOL . PHP_EOL,
                         3,
@@ -338,7 +337,7 @@ class KualionDataRepository
         // Query origin data
         $query = sprintf(
             "SELECT %s FROM %s where teamId = %s and updated_at >= '%s'",
-            "id, name, nivelTension, nivelTensionGroup, clvCentral, nodoP, zonaCarga, unidad, anexoElementoDelECDDeUnidad, anexoElementoDelECD, cuentaDeOrdenDelECD, contractNumberId, fechaInicioDeOperacion, sistema, tipoDeTecnologia, rmu, created_at",
+            "id, name, nivelTension, nivelTensionGroup, clvCentral, nodoP, zonaCarga, unidad, anexoElementoDelECDDeUnidad, anexoElementoDelECD, cuentaDeOrdenDelECD, contractNumberId, fechaInicioDeOperacion, sistema, tipoDeTecnologia, rmu, ccAsociado, created_at",
             "enegence_dev.centralElectrica",
             $this->teamId,
             $this->startDate,
@@ -378,6 +377,7 @@ class KualionDataRepository
                     'TIPODETECNOLOGIA'   => $item['tipoDeTecnologia'],
                     'FECHAINICIODEOPERACION' => $item['fechaInicioDeOperacion'],
                     'ANEXOELEMENTODELECDDEUNIDAD' => $item['anexoElementoDelECDDeUnidad'],
+                    'CCASOCIADO' => $item['ccAsociado'],
                 ];
             },
             $sourceDataArray
@@ -411,6 +411,7 @@ class KualionDataRepository
                         'TIPODETECNOLOGIA',
                         'FECHAINICIODEOPERACION',
                         'ANEXOELEMENTODELECDDEUNIDAD',
+                        'CCASOCIADO',
                     ]
                 );
             }
