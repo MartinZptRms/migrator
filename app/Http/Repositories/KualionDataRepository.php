@@ -60,6 +60,7 @@ class KualionDataRepository
             'preciosPMLMDATable',
             'facturacionCENACETable',
             'facturacionUCTable',
+            'facturacionSCTable',
             'ecdsCENACETable',
             'nodosPTable',
             'ofertasCompraEnergiaTable',
@@ -1921,6 +1922,126 @@ class KualionDataRepository
                 }
             }
         }
+    }
+
+    public function facturacionSCTable()
+    {
+        // Query origin data
+        $query = sprintf(
+            "SELECT %s FROM %s %s where cr.created_at >= '%s' AND cr.teamId= %s",
+            "cr.id, cr.contractId, contractCalculationNumber, startDateParam, endDateParam, centrosDeCargaParam, centralesElectricasParam, quantityEnergySectionSum, CFE_SSB, energyAmount, capacityAmount, cleanEnergyCertificateAmount, regulatedTariffAmount, marketCostAmount, associatedProductsAmount, othersAmount, cr.receptor, tipoComprobante, fechaEmision, subtotal, iva, cr.total, cr.uuid, fechaPago, metodoPago, uuidComplemento, cr.created_at, invoiceNumber, estado, cfdiBeforeTimbrado, i.created_at as createdAt, i.updated_at as updatedAt",
+            "enegence_dev.calculationsResults cr",
+            "LEFT JOIN enegence_cloud.invoices i ON cr.contractCalculationNumber = i.contractCalculation",
+            $this->startDate,
+            $this->teamId,
+        );
+        $sourceData =  $this->sourceConnection->select($query);
+        // Parse to Array
+        $sourceDataArray = json_decode(json_encode($sourceData), true);
+        error_log(
+            date("[Y-m-d H:i:s]") . $query . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
+
+        // Exit function if there is no data to migrate
+        if (count($sourceDataArray) == 0) {
+            return;
+        }
+
+        // Map to target database fields
+        $targetDataArray = array_map(
+            function ($item) {
+                return [
+                    'ID'  => $item['id'],
+                    'CONTRATO'  => $item['contractId'],
+                    'CALCULO'  => $item['contractCalculationNumber'],
+                    'FECHAINICIO' => $item['startDateParam'],
+                    'FECHAFIN' => $item['endDateParam'],
+                    'CENTROSDECARGA' => $item['centrosDeCargaParam'],
+                    'CENTRALESELECTRICAS' => $item['centralesElectricasParam'],
+                    'CANTIDADENERGIA' => $item['quantityEnergySectionSum'],
+                    'CFE_SSB' => $item['CFE_SSB'],
+                    'ENERGIA' => $item['energyAmount'],
+                    'POTENCIA' => $item['capacityAmount'],
+                    'CELS' => $item['cleanEnergyCertificateAmount'],
+                    'TARIFASREGULADAS' => $item['regulatedTariffAmount'],
+                    'PRODUCTOSASOCIADOS' => $item['marketCostAmount'],
+                    'COSTOSDEMERCADO' => $item['associatedProductsAmount'],
+                    'OTROS' => $item['othersAmount'],
+                    'RECEPTOR' => $item['receptor'],
+                    'TIPOCOMPROBANTE' => $item['tipoComprobante'],
+                    'FECHAEMISION' => $item['fechaEmision'],
+                    'SUBTOTAL' => $item['subtotal'],
+                    'IVA' => $item['iva'],
+                    'TOTAL' => $item['total'],
+                    'UUID' => $item['uuid'],
+                    'FECHAPAGO' => $item['fechaPago'],
+                    'METODOPAGO' => $item['metodoPago'],
+                    'UUIDCOMPLEMENTO' => $item['uuidComplemento'],
+                    'CREATED_AT' => $item['created_at'],
+                    'FACTURA' => $item['invoiceNumber'],
+                    'ESTADO' => $item['estado'],
+                    'XML' => $item['cfdiBeforeTimbrado'],
+                    'FECHA_FACTURACION' => $item['createdAt'],
+                    'UPDATE_FACTURACION' => $item['updatedAt'],
+                ];
+            },
+            $sourceDataArray
+        );
+
+        // Parce to Chunks for optimization.
+        $chunks = array_chunk($targetDataArray, 1000);
+
+        // Run insert query in target connection transaction
+        DB::connection('oracle')->transaction(function () use ($chunks) {
+            foreach ($chunks as $chunk) {
+                $this->targetConnection->table('FACTURAS')->upsert(
+                    $chunk,
+                    [
+                        'ID'
+                    ],
+                    [
+                        'CONTRATO',
+                        'CALCULO',
+                        'FECHAINICIO',
+                        'FECHAFIN',
+                        'CENTROSDECARGA',
+                        'CENTRALESELECTRICAS',
+                        'CANTIDADENERGIA',
+                        'CFE_SSB',
+                        'ENERGIA',
+                        'POTENCIA',
+                        'CELS',
+                        'TARIFASREGULADAS',
+                        'PRODUCTOSASOCIADOS',
+                        'COSTOSDEMERCADO',
+                        'OTROS',
+                        'RECEPTOR',
+                        'TIPOCOMPROBANTE',
+                        'FECHAEMISION',
+                        'SUBTOTAL',
+                        'IVA',
+                        'TOTAL',
+                        'UUID',
+                        'FECHAPAGO',
+                        'METODOPAGO',
+                        'UUIDCOMPLEMENTO',
+                        'CREATED_AT',
+                        'FACTURA',
+                        'ESTADO',
+                        'XML',
+                        'FECHA_FACTURACION',
+                        'UPDATE_FACTURACION'
+                    ]
+                );
+            }
+        });
+        error_log(
+            date("[Y-m-d H:i:s]") . " migrated ". count($targetDataArray).' rows.' . PHP_EOL . PHP_EOL,
+            3,
+            storage_path('logs/tables.log')
+        );
     }
 
     public function ecdsCENACETable()
