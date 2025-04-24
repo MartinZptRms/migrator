@@ -1928,7 +1928,7 @@ class KualionDataRepository
     {
         // Query origin data
         $query = sprintf(
-            "SELECT %s FROM %s %s where cr.created_at >= '%s' AND cr.teamId= %s",
+            "SELECT %s FROM %s %s where i.updated_at >= '%s' AND i.team_id= %s",
             "cr.id, cr.contractId, contractCalculationNumber, startDateParam, endDateParam, centrosDeCargaParam, centralesElectricasParam, quantityEnergySectionSum, CFE_SSB, energyAmount, capacityAmount, cleanEnergyCertificateAmount, regulatedTariffAmount, marketCostAmount, associatedProductsAmount, othersAmount, cr.receptor, tipoComprobante, fechaEmision, subtotal, iva, cr.total, cr.uuid, fechaPago, metodoPago, uuidComplemento, cr.created_at, invoiceNumber, estado, cfdiBeforeTimbrado, i.created_at as createdAt, i.updated_at as updatedAt",
             "enegence_dev.calculationsResults cr",
             "LEFT JOIN enegence_cloud.invoices i ON cr.contractCalculationNumber = i.contractCalculation",
